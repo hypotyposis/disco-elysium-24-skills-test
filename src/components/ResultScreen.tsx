@@ -20,6 +20,32 @@ export function ResultScreen({
 }: ResultScreenProps) {
   const [copied, setCopied] = useState(false)
   const maxSkillScore = Math.max(result.primarySkill.score, 1)
+  const rankedAttributes = [...reference.attributes].sort((left, right) => {
+    const scoreDelta =
+      result.attributeScores[right.english] -
+      result.attributeScores[left.english]
+
+    if (scoreDelta !== 0) {
+      return scoreDelta
+    }
+
+    return (
+      reference.attributes.findIndex(
+        (attribute) => attribute.english === left.english,
+      ) -
+      reference.attributes.findIndex(
+        (attribute) => attribute.english === right.english,
+      )
+    )
+  })
+
+  const getNotchCount = (score: number) => {
+    if (score <= 0) {
+      return 0
+    }
+
+    return Math.max(1, Math.round((score / maxSkillScore) * 5))
+  }
 
   const handleCopy = async () => {
     if (!navigator.clipboard) {
@@ -33,157 +59,182 @@ export function ResultScreen({
 
   return (
     <section className="result-screen">
-      <div className="result-hero panel">
-        <div className="section-heading">
-          <p className="section-heading__eyebrow">
-            Case Closed / Internal Monologue
-          </p>
-          <h1>{result.primarySkill.chinese}</h1>
-          <p className="result-hero__subtitle">{result.primarySkill.english}</p>
+      <header className="verdict-sheet dossier-sheet">
+        <div className="sheet-meta sheet-meta--result">
+          <span className="file-label">结案记录 / internal voice</span>
+          <span>归档完成</span>
         </div>
 
-        <p className="result-hero__punchline">{narrative.punchline}</p>
-        <p className="result-hero__summary">{narrative.summary}</p>
+        <div className="verdict-sheet__body">
+          <div className="verdict-nameblock">
+            <p className="verdict-nameblock__prefix">主导技能</p>
+            <h1>{result.primarySkill.chinese}</h1>
+            <p className="verdict-nameblock__english">
+              {result.primarySkill.english}
+            </p>
+          </div>
 
-        <div className="result-hero__actions">
-          <button className="primary-button" type="button" onClick={onRestart}>
+          <div className="verdict-summary">
+            <p className="verdict-summary__lead">{narrative.punchline}</p>
+            <p>{narrative.summary}</p>
+          </div>
+        </div>
+
+        <div className="verdict-fragments">
+          <div className="verdict-fragment">
+            <span>主导属性</span>
+            <strong>{narrative.dominantAttribute.chinese}</strong>
+          </div>
+          <div className="verdict-fragment">
+            <span>第二声部</span>
+            <strong>{narrative.secondarySkill.chinese}</strong>
+          </div>
+          <div className="verdict-fragment">
+            <span>第三声部</span>
+            <strong>{narrative.tertiarySkill.chinese}</strong>
+          </div>
+        </div>
+
+        <div className="verdict-actions">
+          <button className="document-button" type="button" onClick={onRestart}>
             重新测试
           </button>
           <button
-            className="text-button"
+            className="document-button document-button--ghost"
             type="button"
             onClick={() => void handleCopy()}
           >
             {copied ? '摘要已复制' : '复制结果摘要'}
           </button>
         </div>
+      </header>
 
-        <div className="result-hero__badges">
-          <span className="stat-chip">
-            <strong>{narrative.dominantAttribute.chinese}</strong>
-            <span>主导属性</span>
-          </span>
-          <span className="stat-chip">
-            <strong>{narrative.secondarySkill.chinese}</strong>
-            <span>第二声部</span>
-          </span>
-          <span className="stat-chip">
-            <strong>{narrative.tertiarySkill.chinese}</strong>
-            <span>第三声部</span>
-          </span>
-        </div>
-      </div>
-
-      <div className="result-grid">
-        <section className="panel">
-          <div className="section-heading">
-            <p className="section-heading__eyebrow">Top 3 Voices</p>
-            <h2>最响的三种声音</h2>
+      <div className="result-dossier-grid">
+        <section className="case-notes">
+          <div className="section-record">
+            <p className="file-label">回响记录</p>
+            <h2>最响的三份证词</h2>
           </div>
 
-          <div className="voice-list">
+          <ol className="voice-dockets">
             {result.top3Skills.map((skill, index) => {
               const flavor = skillFlavorNotes[skill.english]
-              const width = `${(skill.score / maxSkillScore) * 100}%`
 
               return (
-                <article className="voice-card" key={skill.english}>
-                  <div className="voice-card__head">
-                    <p>#{index + 1}</p>
-                    <div>
-                      <h3>{skill.chinese}</h3>
-                      <span>{skill.english}</span>
-                    </div>
-                    <strong>{skill.score}</strong>
+                <li
+                  className={`voice-docket${index === 0 ? ' voice-docket--primary' : ''}`}
+                  key={skill.english}
+                >
+                  <div className="voice-docket__head">
+                    <span>证词 {String(index + 1).padStart(2, '0')}</span>
+                    <span>强度 {skill.score}</span>
                   </div>
-                  <div aria-hidden="true" className="meter-track">
-                    <div className="meter-fill" style={{ width }} />
+                  <div className="voice-docket__title">
+                    <strong>{skill.chinese}</strong>
+                    <span>{skill.english}</span>
                   </div>
                   <p>{flavor.punchline}</p>
-                </article>
+                </li>
               )
             })}
-          </div>
+          </ol>
         </section>
 
-        <section className="panel">
-          <div className="section-heading">
-            <p className="section-heading__eyebrow">Attribute Profile</p>
-            <h2>四大属性</h2>
-          </div>
-
-          <div className="attribute-layout">
-            <AttributeDiamond
-              attributes={reference.attributes}
-              scores={result.attributeScores}
-            />
-            <div className="attribute-bars">
-              {reference.attributes.map((attribute) => (
-                <div className="attribute-row" key={attribute.english}>
-                  <div>
-                    <strong>{attribute.chinese}</strong>
-                    <span>{attribute.english}</span>
-                  </div>
-                  <div aria-hidden="true" className="meter-track">
-                    <div
-                      className="meter-fill"
-                      style={{
-                        width: `${result.attributeScores[attribute.english]}%`,
-                      }}
-                    />
-                  </div>
-                  <strong>{result.attributeScores[attribute.english]}</strong>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
+        <aside className="thought-note">
+          <p className="file-label">思维橱柜倾向</p>
+          <h2>{narrative.thoughtTitle}</h2>
+          <p>{narrative.thoughtBody}</p>
+        </aside>
       </div>
 
-      <section className="panel thought-card">
-        <div className="section-heading">
-          <p className="section-heading__eyebrow">Thought Cabinet Tendency</p>
-          <h2>{narrative.thoughtTitle}</h2>
+      <section className="attribute-sheet">
+        <div className="section-record">
+          <p className="file-label">属性现场图</p>
+          <h2>四大属性在给哪股冲动供电</h2>
         </div>
-        <p>{narrative.thoughtBody}</p>
+
+        <div className="attribute-sheet__body">
+          <AttributeDiamond
+            attributes={reference.attributes}
+            scores={result.attributeScores}
+          />
+
+          <ol className="attribute-dockets">
+            {rankedAttributes.map((attribute, index) => (
+              <li
+                className={`attribute-docket${index === 0 ? ' is-dominant' : ''}`}
+                key={attribute.english}
+              >
+                <div>
+                  <strong>{attribute.chinese}</strong>
+                  <span>{attribute.short}</span>
+                </div>
+                <span className="attribute-docket__score">
+                  {result.attributeScores[attribute.english]}
+                </span>
+              </li>
+            ))}
+          </ol>
+        </div>
       </section>
 
-      <section className="panel">
-        <div className="section-heading">
-          <p className="section-heading__eyebrow">All 24 Skills</p>
-          <h2>按属性归档的全部技能</h2>
+      <section className="skills-sheet">
+        <div className="section-record">
+          <p className="file-label">总档案</p>
+          <h2>二十四种技能，按卷归档</h2>
         </div>
 
-        <div className="grouped-skills">
-          {result.groupedSkills.map((group) => (
-            <article className="skill-group" key={group.attribute.english}>
-              <div className="skill-group__header">
+        <div className="skills-sheet__board">
+          {result.groupedSkills.map((group, groupIndex) => (
+            <article
+              className={`skill-folder skill-folder--${groupIndex + 1}`}
+              key={group.attribute.english}
+            >
+              <div className="skill-folder__head">
                 <div>
                   <h3>{group.attribute.chinese}</h3>
-                  <span>{group.attribute.english}</span>
+                  <span>{group.attribute.short}</span>
                 </div>
-                <p>{group.attribute.short}</p>
+                <strong>{group.attribute.english}</strong>
               </div>
 
-              <div className="skill-group__rows">
-                {group.skills.map((skill) => (
-                  <div className="skill-row" key={skill.english}>
-                    <div className="skill-row__copy">
-                      <strong>{skill.chinese}</strong>
-                      <span>{skill.english}</span>
-                    </div>
-                    <div aria-hidden="true" className="meter-track">
-                      <div
-                        className="meter-fill"
-                        style={{
-                          width: `${(skill.score / maxSkillScore) * 100}%`,
-                        }}
-                      />
-                    </div>
-                    <strong>{skill.score}</strong>
-                  </div>
-                ))}
-              </div>
+              <ol className="skill-folder__rows">
+                {group.skills.map((skill, skillIndex) => {
+                  const notchCount = getNotchCount(skill.score)
+                  const isPrimary =
+                    skill.english === result.primarySkill.english
+                  const isTopThree = result.top3Skills.some(
+                    (topSkill) => topSkill.english === skill.english,
+                  )
+
+                  return (
+                    <li
+                      className={`skill-entry${isPrimary ? ' is-primary' : ''}${isTopThree ? ' is-top-three' : ''}`}
+                      key={skill.english}
+                    >
+                      <span className="skill-entry__index">
+                        {String(skillIndex + 1).padStart(2, '0')}
+                      </span>
+                      <div className="skill-entry__copy">
+                        <strong>{skill.chinese}</strong>
+                        <span>{skill.english}</span>
+                      </div>
+                      <div className="skill-entry__notches" aria-hidden="true">
+                        {Array.from({ length: 5 }, (_, notchIndex) => (
+                          <span
+                            className={
+                              notchIndex < notchCount
+                                ? 'skill-entry__notch is-filled'
+                                : 'skill-entry__notch'
+                            }
+                            key={`${skill.english}-${notchIndex}`}
+                          />
+                        ))}
+                      </div>
+                    </li>
+                  )
+                })}
+              </ol>
             </article>
           ))}
         </div>

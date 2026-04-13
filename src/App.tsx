@@ -19,6 +19,7 @@ function App() {
   )
 
   const currentQuestion = quizQuestions[currentIndex]
+  const selectedValue = answers[currentQuestion?.id]
   const answerList = quizQuestions.flatMap((question) => {
     const value = answers[question.id]
 
@@ -78,11 +79,12 @@ function App() {
   }
 
   return (
-    <main className="app-shell">
+    <main className={`app-shell app-shell--${phase}`}>
       <div className="app-shell__smoke" aria-hidden="true" />
       <div className="app-shell__grain" aria-hidden="true" />
+      <div className="app-shell__threads" aria-hidden="true" />
 
-      <div className="page-frame">
+      <div className={`page-frame page-frame--${phase}`}>
         {phase === 'landing' && (
           <LandingScreen
             onStart={handleStart}
@@ -98,6 +100,7 @@ function App() {
             onBack={handleBack}
             onRestart={handleRestart}
             question={currentQuestion}
+            selectedValue={selectedValue}
             total={quizQuestions.length}
           />
         )}

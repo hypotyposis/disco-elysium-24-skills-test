@@ -19,74 +19,105 @@ export function LandingScreen({
   }))
 
   return (
-    <section className="landing-screen">
-      <div className="hero-panel panel">
-        <p className="eyebrow">Revachol / Internal Affairs of the Self</p>
-        <div className="hero-grid">
-          <div className="hero-copy">
-            <p className="hero-kicker">内心旁白鉴定</p>
-            <h1>哪一个技能，正在替你说话？</h1>
-            <p className="hero-summary">
-              24
-              道题，拆开你在混乱、关系、直觉与冲动里的第一反应。最后留下来的，
-              会是最响的一种声音。
+    <section className="landing-screen" aria-labelledby="landing-title">
+      <header className="landing-sheet dossier-sheet">
+        <div className="sheet-meta">
+          <span className="file-label">内心审讯卷宗</span>
+          <span>卷别 04 / 证物 24</span>
+        </div>
+
+        <div className="landing-lockup">
+          <div className="landing-lockup__main">
+            <p className="landing-lockup__prefix">夜班后自查，不对外流通</p>
+            <h1 id="landing-title">
+              哪一个技能
+              <br />
+              正在替你说话
+            </h1>
+            <p className="landing-lockup__summary">
+              {questionCount}
+              道题，逐张翻开你在混乱、关系、直觉与冲动面前的第一反应。最后留档的，
+              会是脑子里最响的那一位。
             </p>
-            <p className="hero-flavor">
-              不是职业测试。更像一份夜班后的自我审讯记录。
-            </p>
-            <div className="hero-actions">
-              <button
-                className="primary-button"
-                type="button"
-                onClick={onStart}
-              >
-                开始归档
-              </button>
-              <div className="stat-chip">
+          </div>
+
+          <div className="landing-emblem" aria-hidden="true">
+            <span>卷宗</span>
+            <strong>24</strong>
+            <span>voice trace</span>
+          </div>
+        </div>
+
+        <div className="landing-annotations" aria-hidden="true">
+          <div className="annotation-slip">
+            <p className="annotation-slip__title">判读方式</p>
+            <p>逐题累计技能与属性权重，不做模板贴合，不给人格贴标签。</p>
+          </div>
+          <div className="annotation-slip annotation-slip--offset">
+            <p className="annotation-slip__title">现场气味</p>
+            <p>旧纸、灰烬、酒渍、红线。没有原图，只有你脑内那面坏掉的案板。</p>
+          </div>
+        </div>
+
+        <div className="landing-footer">
+          <button className="document-button" type="button" onClick={onStart}>
+            开启审讯
+          </button>
+
+          <div className="landing-ledger">
+            <p className="file-label">目录摘要</p>
+            <ul>
+              <li>
                 <strong>{questionCount}</strong>
-                <span>题 / 24 技能</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="hero-side">
-            <div className="side-card">
-              <p className="side-card__label">判读方式</p>
-              <p>
-                直接累计技能分，不做人格模板贴合。每一题都会推动若干技能与四大属性。
-              </p>
-            </div>
-            <div className="side-card">
-              <p className="side-card__label">气味</p>
-              <p>
-                墨黑、酒红、黄铜、烟灰、旧纸。没有原作图片，只有你脑内的雾和尘。
-              </p>
-            </div>
+                <span>份口供</span>
+              </li>
+              <li>
+                <strong>{reference.skills.length}</strong>
+                <span>种技能</span>
+              </li>
+              <li>
+                <strong>{reference.attributes.length}</strong>
+                <span>卷属性</span>
+              </li>
+            </ul>
           </div>
         </div>
-      </div>
+      </header>
 
-      <section className="skill-ledger panel">
-        <div className="section-heading">
-          <p className="section-heading__eyebrow">Voices Inventory</p>
-          <h2>24 个声音，按 4 大属性分卷</h2>
+      <section className="landing-archive" aria-labelledby="archive-title">
+        <div className="archive-heading">
+          <p className="file-label">目录页 / voices index</p>
+          <h2 id="archive-title">四卷分档，二十四种脑内证词。</h2>
+          <p>不是能力树，是四类不同的失控方式。</p>
         </div>
 
-        <div className="ledger-grid">
-          {groupedSkills.map(({ attribute, skills }) => (
-            <article className="ledger-column" key={attribute.english}>
-              <div className="ledger-column__head">
-                <p>{attribute.chinese}</p>
-                <span>{attribute.english}</span>
+        <div className="archive-board">
+          {groupedSkills.map(({ attribute, skills }, index) => (
+            <article
+              className={`attribute-folder attribute-folder--${index + 1}`}
+              key={attribute.english}
+            >
+              <div className="attribute-folder__head">
+                <div>
+                  <p>{attribute.chinese}</p>
+                  <span>{attribute.short}</span>
+                </div>
+                <strong>{attribute.english}</strong>
               </div>
-              <ul>
-                {skills.map((skill) => (
+
+              <ol>
+                {skills.map((skill, skillIndex) => (
                   <li key={skill.english}>
-                    <strong>{skill.chinese}</strong>
-                    <span>{skill.english}</span>
+                    <span className="attribute-folder__index">
+                      {String(skillIndex + 1).padStart(2, '0')}
+                    </span>
+                    <div>
+                      <strong>{skill.chinese}</strong>
+                      <span>{skill.english}</span>
+                    </div>
                   </li>
                 ))}
-              </ul>
+              </ol>
             </article>
           ))}
         </div>
