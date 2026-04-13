@@ -1,4 +1,4 @@
-import reference from './discoSkillReference.json'
+import reference from './discoSkillReference.json' with { type: 'json' }
 
 import type {
   AttributeReference,

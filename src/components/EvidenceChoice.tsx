@@ -5,6 +5,11 @@ interface EvidenceChoiceProps {
   selected: boolean
   variant: 'likert' | 'scenario'
   order: number
+  voiceLabel?: string
+  portrait?: {
+    alt: string
+    src: string
+  }
   onSelect: () => void
 }
 
@@ -15,6 +20,8 @@ export function EvidenceChoice({
   selected,
   variant,
   order,
+  voiceLabel,
+  portrait,
   onSelect,
 }: EvidenceChoiceProps) {
   return (
@@ -24,7 +31,23 @@ export function EvidenceChoice({
       aria-pressed={selected}
       onClick={onSelect}
     >
-      <span className="evidence-slip__docket">{docket}</span>
+      <div className="evidence-slip__head">
+        <span className="evidence-slip__docket">{docket}</span>
+
+        {(voiceLabel || portrait) && (
+          <span className="evidence-slip__witness">
+            {voiceLabel && (
+              <span className="evidence-slip__voice">{voiceLabel}</span>
+            )}
+            {portrait && (
+              <span className="evidence-slip__portrait">
+                <img alt={portrait.alt} loading="lazy" src={portrait.src} />
+              </span>
+            )}
+          </span>
+        )}
+      </div>
+
       <strong className="evidence-slip__label">{label}</strong>
       <span className="evidence-slip__note">{note}</span>
       <span className="evidence-slip__marker">

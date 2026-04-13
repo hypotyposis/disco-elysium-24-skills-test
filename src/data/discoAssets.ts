@@ -1,4 +1,11 @@
-import type { SkillReference } from '../types/quiz.ts'
+import { skillFlavorNotes } from './resultCopy.ts'
+import { skillMap } from './discoReference.ts'
+import type {
+  AttributeKey,
+  QuizQuestion,
+  ScoreVector,
+  SkillReference,
+} from '../types/quiz.ts'
 
 export interface DiscoArtAsset {
   label: string
@@ -18,6 +25,31 @@ export interface VoicePortraitLineupItem {
   skill: Pick<SkillReference, 'chinese' | 'english'>
 }
 
+export interface QuestionVoiceLineupItem {
+  cue: string
+  description: string
+  docket: string
+  portrait: SkillPortraitAsset
+  rank: number
+  skill: Pick<SkillReference, 'chinese' | 'english'>
+  stance: string
+}
+
+export interface QuizQuestionSceneSpec {
+  artifact: DiscoArtAsset
+  backdrop: DiscoArtAsset
+  lead: string
+  note: string
+  title: string
+  voices: QuestionVoiceLineupItem[]
+}
+
+export interface ResultPosterArtSpec {
+  artifact: DiscoArtAsset
+  backdrop: DiscoArtAsset
+  docket: string
+}
+
 function createAsset(relativePath: string, label: string): DiscoArtAsset {
   return {
     label,
@@ -25,27 +57,78 @@ function createAsset(relativePath: string, label: string): DiscoArtAsset {
   }
 }
 
-export const landingBackdropAssets = {
-  lobbyBackdrop: createAsset(
-    '../assets/disco-game/backgrounds/lobby_backdrop.png',
-    'Whirling-in-Rags lobby backdrop',
+export const backgroundArtAssets = {
+  darkness: createAsset(
+    '../assets/disco-game/backgrounds/darkness.png',
+    'Darkness backdrop',
+  ),
+  discoElysium: createAsset(
+    '../assets/disco-game/backgrounds/disco_elysium.png',
+    'Disco Elysium title art',
   ),
   discoElysiumClean: createAsset(
     '../assets/disco-game/backgrounds/disco_elysium_clean.png',
     'Disco Elysium clean background',
   ),
+  lobbyBackdrop: createAsset(
+    '../assets/disco-game/backgrounds/lobby_backdrop.png',
+    'Whirling-in-Rags lobby backdrop',
+  ),
+  photoHanged: createAsset(
+    '../assets/disco-game/backgrounds/photo_hanged.png',
+    'Hanged Man photo',
+  ),
+  photoPhasmid: createAsset(
+    '../assets/disco-game/backgrounds/photo_phasmid.png',
+    'Phasmid photo',
+  ),
+  redness: createAsset(
+    '../assets/disco-game/backgrounds/redness.png',
+    'Redness wash',
+  ),
+  tequilaFace: createAsset(
+    '../assets/disco-game/backgrounds/tequila_face.png',
+    'Tequila Sunset face',
+  ),
+  whiteness: createAsset(
+    '../assets/disco-game/backgrounds/whiteness.png',
+    'Pale whiteness backdrop',
+  ),
+} as const
+
+export const landingBackdropAssets = {
+  lobbyBackdrop: backgroundArtAssets.lobbyBackdrop,
+  discoElysiumClean: backgroundArtAssets.discoElysiumClean,
 } as const
 
 export const dossierArtifactAssets = {
   badge: createAsset('../assets/disco-game/icons/badge.png', 'RCM badge'),
+  bluePen: createAsset(
+    '../assets/disco-game/icons/blue_oblong_pen.png',
+    'Blue oblong pen',
+  ),
+  boombox: createAsset('../assets/disco-game/icons/boombox.png', 'Boombox'),
+  flashlight: createAsset(
+    '../assets/disco-game/icons/flashlight.png',
+    'Flashlight',
+  ),
   ledger: createAsset(
     '../assets/disco-game/icons/ledger_of_failure_and_hatred.png',
     'Ledger of Failure and Hatred',
+  ),
+  ledgerDamaged: createAsset(
+    '../assets/disco-game/icons/ledger_damaged.png',
+    'Damaged ledger',
+  ),
+  ledgerOblivion: createAsset(
+    '../assets/disco-game/icons/ledger_oblivion.png',
+    'Ledger of oblivion',
   ),
   map: createAsset(
     '../assets/disco-game/icons/map_of_martinaise.png',
     'Map of Martinaise',
   ),
+  money: createAsset('../assets/disco-game/icons/money.png', 'Reál banknote'),
   pen: createAsset(
     '../assets/disco-game/icons/kind_green_ape_pen.png',
     'Kind Green Ape pen',
@@ -152,6 +235,143 @@ const portraitAssetsBySlug = {
 } as const
 
 type PortraitSlug = keyof typeof portraitAssetsBySlug
+type BackgroundKey = keyof typeof backgroundArtAssets
+type DossierArtifactKey = keyof typeof dossierArtifactAssets
+
+const skillOrder = Object.keys(skillMap)
+
+function createAssignmentRecord<T extends string>(
+  assignments: ReadonlyArray<{ ids: readonly string[]; value: T }>,
+): Record<string, T> {
+  return assignments.reduce<Record<string, T>>((record, assignment) => {
+    assignment.ids.forEach((id) => {
+      record[id] = assignment.value
+    })
+
+    return record
+  }, {})
+}
+
+const quizBackdropByQuestionId = createAssignmentRecord<BackgroundKey>([
+  {
+    value: 'whiteness',
+    ids: ['likert-evidence', 'likert-trivia', 'likert-reconstruction'],
+  },
+  {
+    value: 'discoElysiumClean',
+    ids: ['likert-argument', 'likert-body-solution', 'scenario-machine'],
+  },
+  {
+    value: 'lobbyBackdrop',
+    ids: ['likert-performance', 'likert-badge', 'scenario-bar'],
+  },
+  {
+    value: 'photoPhasmid',
+    ids: ['likert-aesthetic', 'likert-soft-persuasion', 'scenario-letter'],
+  },
+  {
+    value: 'darkness',
+    ids: ['likert-self-control', 'likert-pain', 'scenario-crime-scene'],
+  },
+  {
+    value: 'redness',
+    ids: ['likert-emotional-cues', 'likert-dominance', 'scenario-shot'],
+  },
+  {
+    value: 'tequilaFace',
+    ids: ['likert-temptation', 'scenario-bottle'],
+  },
+  {
+    value: 'photoHanged',
+    ids: ['likert-city-voice', 'likert-sensory-scan', 'scenario-lie'],
+  },
+  {
+    value: 'discoElysium',
+    ids: ['scenario-partner'],
+  },
+])
+
+const quizArtifactByQuestionId = createAssignmentRecord<DossierArtifactKey>([
+  {
+    value: 'flashlight',
+    ids: ['likert-evidence', 'likert-reconstruction', 'scenario-lie'],
+  },
+  {
+    value: 'ledgerDamaged',
+    ids: ['likert-trivia', 'likert-argument', 'scenario-letter'],
+  },
+  {
+    value: 'boombox',
+    ids: ['likert-performance', 'likert-temptation', 'scenario-bar'],
+  },
+  {
+    value: 'badge',
+    ids: ['likert-dominance', 'likert-badge', 'scenario-shot'],
+  },
+  {
+    value: 'ledgerOblivion',
+    ids: ['likert-city-voice', 'scenario-bottle'],
+  },
+  {
+    value: 'money',
+    ids: ['likert-pain', 'likert-body-solution', 'scenario-machine'],
+  },
+  {
+    value: 'map',
+    ids: ['likert-sensory-scan', 'scenario-crime-scene', 'scenario-partner'],
+  },
+  {
+    value: 'pen',
+    ids: ['likert-self-control', 'likert-soft-persuasion'],
+  },
+  {
+    value: 'bluePen',
+    ids: ['likert-aesthetic', 'likert-emotional-cues'],
+  },
+])
+
+const posterBackdropBySkill = createAssignmentRecord<BackgroundKey>([
+  { value: 'whiteness', ids: ['Logic', 'Encyclopedia', 'Volition'] },
+  {
+    value: 'discoElysiumClean',
+    ids: ['Visual Calculus', 'Interfacing', 'Composure'],
+  },
+  {
+    value: 'photoPhasmid',
+    ids: ['Conceptualization', 'Inland Empire', 'Empathy'],
+  },
+  {
+    value: 'lobbyBackdrop',
+    ids: ['Drama', 'Suggestion', 'Esprit de Corps'],
+  },
+  {
+    value: 'tequilaFace',
+    ids: ['Electrochemistry', 'Savoir Faire', 'Reaction Speed'],
+  },
+  { value: 'redness', ids: ['Authority', 'Rhetoric', 'Half Light'] },
+  {
+    value: 'darkness',
+    ids: ['Endurance', 'Pain Threshold', 'Physical Instrument'],
+  },
+  {
+    value: 'photoHanged',
+    ids: ['Shivers', 'Perception (Sight)', 'Hand/Eye Coordination'],
+  },
+])
+
+const posterArtifactByAttribute: Record<AttributeKey, DossierArtifactKey> = {
+  Intellect: 'map',
+  Psyche: 'badge',
+  Fysique: 'money',
+  Motorics: 'flashlight',
+}
+
+const posterBackdropByAttribute: Record<AttributeKey, BackgroundKey> = {
+  Intellect: 'whiteness',
+  Psyche: 'photoPhasmid',
+  Fysique: 'darkness',
+  Motorics: 'discoElysiumClean',
+}
 
 export function normalizeSkillPortraitSlug(skillName: string): string {
   return skillName
@@ -199,4 +419,147 @@ export function buildVoicePortraitLineup(
       },
     ]
   })
+}
+
+export function getQuizQuestionSceneSpec(
+  question: QuizQuestion,
+): QuizQuestionSceneSpec {
+  return {
+    artifact:
+      dossierArtifactAssets[
+        quizArtifactByQuestionId[question.id] ??
+          (question.kind === 'likert' ? 'ledgerDamaged' : 'flashlight')
+      ],
+    backdrop:
+      backgroundArtAssets[
+        quizBackdropByQuestionId[question.id] ??
+          (question.kind === 'likert' ? 'whiteness' : 'darkness')
+      ],
+    lead:
+      question.kind === 'likert'
+        ? '同一份陈述，允许互相顶嘴的技能同时出庭。'
+        : '每个处理方式都带着一位技能代言，等你偏向谁。',
+    note:
+      question.kind === 'likert'
+        ? '把它想成一次脑内对白：认领与否认会召来不同的声部。'
+        : '先别求正确答案，先认出哪条路径像你会先迈出的那一步。',
+    title: question.kind === 'likert' ? '脑内声部对峙' : '现场路径复演',
+    voices:
+      question.kind === 'likert'
+        ? buildLikertQuestionVoices(question)
+        : buildScenarioQuestionVoices(question),
+  }
+}
+
+export function getResultPosterArtSpec(
+  primarySkillEnglish: string,
+  dominantAttribute: AttributeKey,
+): ResultPosterArtSpec {
+  const backdropKey =
+    posterBackdropBySkill[primarySkillEnglish] ??
+    posterBackdropByAttribute[dominantAttribute]
+
+  return {
+    artifact:
+      dossierArtifactAssets[posterArtifactByAttribute[dominantAttribute]],
+    backdrop: backgroundArtAssets[backdropKey],
+    docket: `${dominantAttribute} drive / ${backgroundArtAssets[backdropKey].label}`,
+  }
+}
+
+function buildLikertQuestionVoices(
+  question: Extract<QuizQuestion, { kind: 'likert' }>,
+): QuestionVoiceLineupItem[] {
+  const supportVoices = resolveWeightedSkills(question.agree, 2).flatMap(
+    ({ portrait, skill }, index) => [
+      {
+        cue:
+          skillFlavorNotes[skill.english]?.punchline ??
+          `${skill.chinese}先发言。`,
+        description: '倾向认领这份陈述。',
+        docket: `认领声部 ${String(index + 1).padStart(2, '0')}`,
+        portrait,
+        rank: index + 1,
+        skill,
+        stance: '认领',
+      },
+    ],
+  )
+
+  const counterVoices = resolveWeightedSkills(question.disagree, 2).flatMap(
+    ({ portrait, skill }, index) => [
+      {
+        cue:
+          skillFlavorNotes[skill.english]?.punchline ??
+          `${skill.chinese}不同意。`,
+        description: '倾向拆穿或偏离这份陈述。',
+        docket: `质疑声部 ${String(index + 1).padStart(2, '0')}`,
+        portrait,
+        rank: supportVoices.length + index + 1,
+        skill,
+        stance: '质疑',
+      },
+    ],
+  )
+
+  return [...supportVoices, ...counterVoices]
+}
+
+function buildScenarioQuestionVoices(
+  question: Extract<QuizQuestion, { kind: 'scenario' }>,
+): QuestionVoiceLineupItem[] {
+  return question.options.flatMap((option, index) => {
+    const leadVoice = resolveWeightedSkills(option.effects, 1)[0]
+
+    if (!leadVoice) {
+      return []
+    }
+
+    return [
+      {
+        cue: option.insight,
+        description: option.label,
+        docket: `路径 ${String(index + 1).padStart(2, '0')}`,
+        portrait: leadVoice.portrait,
+        rank: index + 1,
+        skill: leadVoice.skill,
+        stance: '方案主述',
+      },
+    ]
+  })
+}
+
+function resolveWeightedSkills(
+  vector: ScoreVector,
+  limit: number,
+): Array<{
+  portrait: SkillPortraitAsset
+  skill: SkillReference
+  weight: number
+}> {
+  return Object.entries(vector.skills ?? {})
+    .filter(
+      (entry): entry is [string, number] =>
+        typeof entry[1] === 'number' && entry[1] > 0,
+    )
+    .sort((left, right) => {
+      const weightDelta = right[1] - left[1]
+
+      if (weightDelta !== 0) {
+        return weightDelta
+      }
+
+      return skillOrder.indexOf(left[0]) - skillOrder.indexOf(right[0])
+    })
+    .flatMap(([english, weight]) => {
+      const skill = skillMap[english]
+      const portrait = getSkillPortraitAsset(english)
+
+      if (!skill || !portrait) {
+        return []
+      }
+
+      return [{ portrait, skill, weight }]
+    })
+    .slice(0, limit)
 }

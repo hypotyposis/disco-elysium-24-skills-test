@@ -1,9 +1,11 @@
-import { useState } from 'react'
+import { useRef, useState, type CSSProperties } from 'react'
 
 import {
   buildVoicePortraitLineup,
   dossierArtifactAssets,
+  getResultPosterArtSpec,
   getSkillPortraitAsset,
+  normalizeSkillPortraitSlug,
 } from '../data/discoAssets.ts'
 import { skillFlavorNotes } from '../data/resultCopy.ts'
 import type { ResultNarrative } from '../lib/resultNarrative.ts'
@@ -24,9 +26,22 @@ export function ResultScreen({
   narrative,
   onRestart,
 }: ResultScreenProps) {
-  const [copied, setCopied] = useState(false)
+  const [copyState, setCopyState] = useState<'idle' | 'copied' | 'error'>(
+    'idle',
+  )
+  const [exportState, setExportState] = useState<
+    'idle' | 'saving' | 'saved' | 'error'
+  >('idle')
+  const posterRef = useRef<HTMLDivElement>(null)
   const maxSkillScore = Math.max(result.primarySkill.score, 1)
   const primaryPortrait = getSkillPortraitAsset(result.primarySkill.english)
+  const posterArt = getResultPosterArtSpec(
+    result.primarySkill.english,
+    narrative.dominantAttribute.english,
+  )
+  const posterStyle = {
+    '--poster-backdrop-image': `url(${posterArt.backdrop.src})`,
+  } as CSSProperties
   const voicePortraitLineup = buildVoicePortraitLineup(result.top3Skills)
   const rankedAttributes = [...reference.attributes].sort((left, right) => {
     const scoreDelta =
@@ -57,12 +72,48 @@ export function ResultScreen({
 
   const handleCopy = async () => {
     if (!navigator.clipboard) {
+      setCopyState('error')
+      window.setTimeout(() => setCopyState('idle'), 1800)
       return
     }
 
-    await navigator.clipboard.writeText(narrative.shareText)
-    setCopied(true)
-    window.setTimeout(() => setCopied(false), 1800)
+    try {
+      await navigator.clipboard.writeText(narrative.shareText)
+      setCopyState('copied')
+    } catch {
+      setCopyState('error')
+    }
+
+    window.setTimeout(() => setCopyState('idle'), 1800)
+  }
+
+  const handleExportPoster = async () => {
+    if (!posterRef.current) {
+      return
+    }
+
+    setExportState('saving')
+
+    try {
+      const { default: html2canvas } = await import('html2canvas')
+      const canvas = await html2canvas(posterRef.current, {
+        backgroundColor: '#170d0b',
+        imageTimeout: 0,
+        logging: false,
+        scale: 2,
+        useCORS: true,
+      })
+      const link = document.createElement('a')
+
+      link.download = `disco-skills-${normalizeSkillPortraitSlug(result.primarySkill.english)}-poster.png`
+      link.href = canvas.toDataURL('image/png')
+      link.click()
+      setExportState('saved')
+    } catch {
+      setExportState('error')
+    }
+
+    window.setTimeout(() => setExportState('idle'), 2200)
   }
 
   return (
@@ -73,51 +124,83 @@ export function ResultScreen({
           <span>归档完成</span>
         </div>
 
-        <div className="verdict-sheet__body">
-          <div className="verdict-sheet__copy">
-            <div className="verdict-nameblock">
-              <p className="verdict-nameblock__prefix">主导技能</p>
-              <h1>{result.primarySkill.chinese}</h1>
-              <p className="verdict-nameblock__english">
-                {result.primarySkill.english}
-              </p>
+        <div className="verdict-poster-frame">
+          <div className="verdict-poster" ref={posterRef} style={posterStyle}>
+            <div className="verdict-poster__wash" aria-hidden="true" />
+
+            <div className="verdict-poster__topline">
+              <span>Voice Trace / poster cut</span>
+              <span>{posterArt.docket}</span>
             </div>
 
-            <div className="verdict-summary">
-              <p className="verdict-summary__lead">{narrative.punchline}</p>
-              <p>{narrative.summary}</p>
+            <DossierArtifact
+              asset={posterArt.artifact}
+              className="verdict-poster__artifact"
+            />
+
+            <div className="verdict-poster__body">
+              <div className="verdict-poster__copy">
+                <p className="verdict-poster__prefix">主导技能 / lead voice</p>
+                <h1>{result.primarySkill.chinese}</h1>
+                <p className="verdict-poster__english">
+                  {result.primarySkill.english}
+                </p>
+                <p className="verdict-poster__punchline">
+                  {narrative.punchline}
+                </p>
+              </div>
+
+              {primaryPortrait && (
+                <figure className="verdict-poster__portrait">
+                  <img
+                    alt={`${result.primarySkill.chinese} ${result.primarySkill.english} 肖像`}
+                    className="verdict-poster__portrait-image"
+                    loading="eager"
+                    src={primaryPortrait.src}
+                  />
+                  <figcaption className="verdict-poster__portrait-label">
+                    <span>主导声部 / portrait cut</span>
+                    <strong>{result.primarySkill.chinese}</strong>
+                  </figcaption>
+                </figure>
+              )}
             </div>
-          </div>
 
-          {primaryPortrait && (
-            <div className="verdict-portrait-panel">
-              <figure className="verdict-portrait-frame">
-                <img
-                  alt={`${result.primarySkill.chinese} ${result.primarySkill.english} 肖像`}
-                  className="verdict-portrait-frame__image"
-                  loading="eager"
-                  src={primaryPortrait.src}
-                />
-                <figcaption className="verdict-portrait-frame__label">
-                  <span>主导声部 / lead voice</span>
-                  <strong>{result.primarySkill.chinese}</strong>
-                </figcaption>
-              </figure>
+            <div className="verdict-poster__facts">
+              <div>
+                <span>主导属性</span>
+                <strong>{narrative.dominantAttribute.chinese}</strong>
+              </div>
+              <div>
+                <span>第二声部</span>
+                <strong>{narrative.secondarySkill.chinese}</strong>
+              </div>
+              <div>
+                <span>思维橱柜</span>
+                <strong>{narrative.thoughtTitle}</strong>
+              </div>
+            </div>
 
-              <ol className="verdict-voice-lineup" aria-label="前三声部肖像">
+            <div className="verdict-poster__footer">
+              <div className="verdict-poster__quote">
+                <span>判词摘录</span>
+                <p>{narrative.summary}</p>
+              </div>
+
+              <ol
+                className="verdict-poster__lineup"
+                aria-label="前三声部海报线列"
+              >
                 {voicePortraitLineup.map((item) => (
-                  <li
-                    className={`verdict-voice-chip${item.isPrimary ? ' is-primary' : ''}`}
-                    key={item.skill.english}
-                  >
-                    <figure className="verdict-voice-chip__portrait">
+                  <li key={item.skill.english}>
+                    <figure className="verdict-poster__lineup-portrait">
                       <img
                         alt={`${item.skill.chinese} ${item.skill.english} 肖像`}
                         loading={item.isPrimary ? 'eager' : 'lazy'}
                         src={item.portrait.src}
                       />
                     </figure>
-                    <div className="verdict-voice-chip__meta">
+                    <div className="verdict-poster__lineup-copy">
                       <span>{item.rankLabel}</span>
                       <strong>{item.skill.chinese}</strong>
                       <small>{item.skill.english}</small>
@@ -126,35 +209,63 @@ export function ResultScreen({
                 ))}
               </ol>
             </div>
-          )}
-        </div>
-
-        <div className="verdict-fragments">
-          <div className="verdict-fragment">
-            <span>主导属性</span>
-            <strong>{narrative.dominantAttribute.chinese}</strong>
-          </div>
-          <div className="verdict-fragment">
-            <span>第二声部</span>
-            <strong>{narrative.secondarySkill.chinese}</strong>
-          </div>
-          <div className="verdict-fragment">
-            <span>第三声部</span>
-            <strong>{narrative.tertiarySkill.chinese}</strong>
           </div>
         </div>
 
-        <div className="verdict-actions">
-          <button className="document-button" type="button" onClick={onRestart}>
-            重新测试
-          </button>
-          <button
-            className="document-button document-button--ghost"
-            type="button"
-            onClick={() => void handleCopy()}
-          >
-            {copied ? '摘要已复制' : '复制结果摘要'}
-          </button>
+        <div className="verdict-brief">
+          <div className="verdict-summary">
+            <p className="verdict-summary__lead">{narrative.punchline}</p>
+            <p>{narrative.summary}</p>
+          </div>
+
+          <div className="verdict-fragments">
+            <div className="verdict-fragment">
+              <span>主导属性</span>
+              <strong>{narrative.dominantAttribute.chinese}</strong>
+            </div>
+            <div className="verdict-fragment">
+              <span>第二声部</span>
+              <strong>{narrative.secondarySkill.chinese}</strong>
+            </div>
+            <div className="verdict-fragment">
+              <span>第三声部</span>
+              <strong>{narrative.tertiarySkill.chinese}</strong>
+            </div>
+          </div>
+
+          <div className="verdict-actions">
+            <button
+              className="document-button"
+              type="button"
+              onClick={() => void handleExportPoster()}
+            >
+              {exportState === 'saving'
+                ? '正在生成 PNG'
+                : exportState === 'saved'
+                  ? '海报已保存'
+                  : exportState === 'error'
+                    ? '导出失败，请重试'
+                    : '保存海报 PNG'}
+            </button>
+            <button
+              className="document-button document-button--ghost"
+              type="button"
+              onClick={() => void handleCopy()}
+            >
+              {copyState === 'copied'
+                ? '摘要已复制'
+                : copyState === 'error'
+                  ? '复制失败，请重试'
+                  : '复制结果摘要'}
+            </button>
+            <button
+              className="document-button document-button--ghost"
+              type="button"
+              onClick={onRestart}
+            >
+              重新测试
+            </button>
+          </div>
         </div>
       </header>
 
