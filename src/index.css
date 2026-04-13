@@ -379,7 +379,8 @@ ul {
 .voice-docket,
 .attribute-sheet,
 .attribute-docket,
-.skill-folder {
+.skill-folder,
+.share-slip {
   position: relative;
   overflow: hidden;
   color: var(--ink-950);
@@ -409,7 +410,8 @@ ul {
 .voice-docket::before,
 .attribute-sheet::before,
 .attribute-docket::before,
-.skill-folder::before {
+.skill-folder::before,
+.share-slip::before {
   content: '';
   position: absolute;
   inset: 0;
@@ -448,7 +450,8 @@ ul {
 .thought-note > *,
 .voice-docket > *,
 .attribute-sheet > *,
-.skill-folder > * {
+.skill-folder > *,
+.share-slip > * {
   position: relative;
   z-index: 1;
 }
@@ -2760,6 +2763,107 @@ ul {
   color: var(--ink-950);
 }
 
+.share-kit {
+  display: grid;
+  gap: 16px;
+  padding-top: 4px;
+}
+
+.share-kit__header {
+  display: grid;
+  gap: 8px;
+}
+
+.share-kit__header .file-label,
+.share-slip__title .file-label {
+  color: var(--blood-700);
+}
+
+.share-kit__copy {
+  display: grid;
+  gap: 8px;
+}
+
+.share-kit__copy h2 {
+  max-width: 13ch;
+  font-size: clamp(1.6rem, 2.6vw, 2.2rem);
+  color: var(--ink-950);
+}
+
+.share-kit__copy p {
+  max-width: 42rem;
+  color: var(--ink-800);
+}
+
+.share-kit__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  align-items: start;
+}
+
+.share-slip {
+  --slip-rotate: 0deg;
+  display: grid;
+  gap: 14px;
+  min-height: 100%;
+  padding: 18px;
+  clip-path: polygon(
+    0 10px,
+    calc(100% - 16px) 0,
+    100% 14px,
+    100% 100%,
+    12px 100%,
+    0 calc(100% - 12px)
+  );
+  transform: rotate(var(--slip-rotate));
+}
+
+.share-slip--1 {
+  --slip-rotate: -1.1deg;
+  margin-top: 0.4rem;
+}
+
+.share-slip--2 {
+  --slip-rotate: 1deg;
+}
+
+.share-slip--3 {
+  --slip-rotate: -0.6deg;
+  margin-top: 0.8rem;
+}
+
+.share-slip__head,
+.share-slip__title {
+  display: grid;
+  gap: 4px;
+}
+
+.share-slip__title h3 {
+  font-size: clamp(1.18rem, 2vw, 1.54rem);
+  color: var(--ink-950);
+}
+
+.share-slip__description {
+  color: var(--ink-800);
+}
+
+.share-slip__preview {
+  padding: 16px 18px;
+  border: 1px dashed color-mix(in oklab, var(--ink-650) 24%, transparent);
+  background: color-mix(in oklab, var(--paper-200) 82%, transparent);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  color: var(--ink-950);
+  font-size: 0.98rem;
+  line-height: 1.72;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.share-slip .document-button {
+  justify-self: start;
+}
+
 .result-dossier-grid {
   display: grid;
   grid-template-columns: minmax(0, 1.14fr) minmax(320px, 0.86fr);
@@ -2784,6 +2888,15 @@ ul {
 
   .verdict-poster__facts {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .share-kit__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .share-slip--3 {
+    margin-top: 0;
+    grid-column: 1 / -1;
   }
 
   .landing-emblem {
@@ -2910,8 +3023,17 @@ ul {
   }
 
   .voice-chorus--likert,
-  .verdict-poster__lineup {
+  .verdict-poster__lineup,
+  .share-kit__grid {
     grid-template-columns: 1fr;
+  }
+
+  .share-slip,
+  .share-slip--1,
+  .share-slip--2,
+  .share-slip--3 {
+    margin-top: 0;
+    transform: none;
   }
 
   .interrogation-actions,

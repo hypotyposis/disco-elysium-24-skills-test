@@ -7,6 +7,60 @@ export interface SkillFlavorNote {
   thoughtBody: string
 }
 
+export type ShareCopyVariantId = 'moments' | 'x' | 'minimal'
+
+export interface ShareCopyVariantTemplate {
+  id: ShareCopyVariantId
+  label: string
+  description: string
+  leadIntro: string
+  leadOutro?: string
+  topVoicesPrefix: string
+  topVoicesOutro?: string
+  includePunchline: boolean
+  includeWorldview: boolean
+  punchlinePrefix?: string
+  worldviewPrefix?: string
+  callToAction?: string
+  hashtags?: readonly string[]
+}
+
+export const shareCopyVariantTemplates: readonly ShareCopyVariantTemplate[] = [
+  {
+    id: 'moments',
+    label: '朋友圈版',
+    description: '中文优先，情绪和氛围更满，适合直接配海报发朋友圈。',
+    leadIntro: '把这份《极乐迪斯科》技能测试做完，档案最终写下的是：',
+    leadOutro: '。',
+    topVoicesPrefix: '脑内前三声部：',
+    topVoicesOutro: '。',
+    includePunchline: true,
+    includeWorldview: true,
+    callToAction: '如果你也测了，欢迎带着海报来报上你的主导技能。',
+  },
+  {
+    id: 'x',
+    label: 'Twitter / X版',
+    description: '更短更利落，混一点英文和轻标签，适合发推或转帖。',
+    leadIntro: 'Lead voice: ',
+    topVoicesPrefix: 'Top 3: ',
+    includePunchline: true,
+    includeWorldview: false,
+    callToAction: 'Which skill runs your inner monologue tonight?',
+    hashtags: ['#DiscoElysium', '#SkillsTest'],
+  },
+  {
+    id: 'minimal',
+    label: '极简版',
+    description: '只保留最关键的结论，适合图注、评论区或二次转发。',
+    leadIntro: '主导声部：',
+    topVoicesPrefix: '前三声部：',
+    includePunchline: true,
+    includeWorldview: false,
+    punchlinePrefix: '判词：',
+  },
+]
+
 export const skillFlavorNotes: Record<string, SkillFlavorNote> = {
   Logic: {
     punchline: '你的脑内书记官先整理证据，再允许情绪发言。',

@@ -1,10 +1,23 @@
-import { skillFlavorNotes } from '../data/resultCopy.ts'
+import {
+  shareCopyVariantTemplates,
+  skillFlavorNotes,
+  type ShareCopyVariantId,
+  type ShareCopyVariantTemplate,
+  type SkillFlavorNote,
+} from '../data/resultCopy.ts'
 import type {
   AttributeReference,
   DiscoReference,
   QuizResult,
   ScoredSkill,
 } from '../types/quiz.ts'
+
+export interface ResultShareVariant {
+  id: ShareCopyVariantId
+  label: string
+  description: string
+  text: string
+}
 
 export interface ResultNarrative {
   punchline: string
@@ -14,7 +27,7 @@ export interface ResultNarrative {
   tertiarySkill: ScoredSkill
   thoughtTitle: string
   thoughtBody: string
-  shareText: string
+  shareVariants: ResultShareVariant[]
 }
 
 export function buildResultNarrative(
@@ -38,11 +51,11 @@ export function buildResultNarrative(
     secondaryNote.worldview,
   )}`
 
-  const shareText = [
-    `主导技能：${result.primarySkill.chinese} ${result.primarySkill.english}`,
-    `Top 3 Voices：${result.top3Skills.map((skill) => skill.chinese).join(' / ')}`,
-    `判词：${primaryNote.punchline}`,
-  ].join('\n')
+  const shareVariants = buildShareVariants({
+    primarySkill: result.primarySkill,
+    primaryNote,
+    top3Skills: [result.primarySkill, secondarySkill, tertiarySkill],
+  })
 
   return {
     punchline: primaryNote.punchline,
@@ -52,8 +65,80 @@ export function buildResultNarrative(
     tertiarySkill,
     thoughtTitle: primaryNote.thoughtTitle,
     thoughtBody,
-    shareText,
+    shareVariants,
   }
+}
+
+function buildShareVariants({
+  primarySkill,
+  primaryNote,
+  top3Skills,
+}: {
+  primarySkill: ScoredSkill
+  primaryNote: SkillFlavorNote
+  top3Skills: readonly [ScoredSkill, ScoredSkill, ScoredSkill]
+}): ResultShareVariant[] {
+  const leadSkill = formatLeadSkill(primarySkill)
+  const topVoices = formatTopVoices(top3Skills)
+
+  return shareCopyVariantTemplates.map((template) => ({
+    id: template.id,
+    label: template.label,
+    description: template.description,
+    text: buildShareVariantText(template, {
+      leadSkill,
+      topVoices,
+      primaryNote,
+    }),
+  }))
+}
+
+function buildShareVariantText(
+  template: ShareCopyVariantTemplate,
+  context: {
+    leadSkill: string
+    topVoices: string
+    primaryNote: SkillFlavorNote
+  },
+): string {
+  return [
+    formatTemplatedLine(
+      template.leadIntro,
+      context.leadSkill,
+      template.leadOutro,
+    ),
+    formatTemplatedLine(
+      template.topVoicesPrefix,
+      context.topVoices,
+      template.topVoicesOutro,
+    ),
+    template.includePunchline
+      ? `${template.punchlinePrefix ?? ''}${context.primaryNote.punchline}`
+      : '',
+    template.includeWorldview
+      ? `${template.worldviewPrefix ?? ''}${context.primaryNote.worldview}`
+      : '',
+    template.callToAction ?? '',
+    template.hashtags?.join(' ') ?? '',
+  ]
+    .filter((line) => line.trim().length > 0)
+    .join('\n')
+}
+
+function formatLeadSkill(skill: ScoredSkill): string {
+  return `${skill.chinese} ${skill.english}`
+}
+
+function formatTopVoices(skills: readonly ScoredSkill[]): string {
+  return skills.map((skill) => skill.chinese).join(' / ')
+}
+
+function formatTemplatedLine(
+  prefix: string,
+  content: string,
+  suffix = '',
+): string {
+  return `${prefix}${content}${suffix}`
 }
 
 function pickDominantAttribute(
