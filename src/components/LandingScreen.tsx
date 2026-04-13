@@ -1,4 +1,9 @@
+import {
+  dossierArtifactAssets,
+  landingBackdropAssets,
+} from '../data/discoAssets.ts'
 import type { DiscoReference } from '../types/quiz.ts'
+import { DossierArtifact } from './DossierArtifact.tsx'
 
 interface LandingScreenProps {
   reference: DiscoReference
@@ -22,7 +27,13 @@ export function LandingScreen({
     <section className="landing-screen" aria-labelledby="landing-title">
       <header className="landing-sheet dossier-sheet">
         <div className="sheet-meta">
-          <span className="file-label">内心审讯卷宗</span>
+          <div className="sheet-meta__identity">
+            <DossierArtifact
+              asset={dossierArtifactAssets.badge}
+              className="dossier-artifact--stamp"
+            />
+            <span className="file-label">内心审讯卷宗</span>
+          </div>
           <span>卷别 04 / 证物 24</span>
         </div>
 
@@ -41,10 +52,25 @@ export function LandingScreen({
             </p>
           </div>
 
-          <div className="landing-emblem" aria-hidden="true">
-            <span>卷宗</span>
-            <strong>24</strong>
-            <span>voice trace</span>
+          <div className="landing-hero-cluster" aria-hidden="true">
+            <figure className="landing-backdrop-card">
+              <img
+                alt=""
+                className="landing-backdrop-card__image"
+                loading="eager"
+                src={landingBackdropAssets.lobbyBackdrop.src}
+              />
+              <figcaption className="landing-backdrop-card__label">
+                <span>夜班现场 / dossier wash</span>
+                <strong>Whirling-in-Rags lobby</strong>
+              </figcaption>
+            </figure>
+
+            <div className="landing-emblem">
+              <span>卷宗</span>
+              <strong>24</strong>
+              <span>voice trace</span>
+            </div>
           </div>
         </div>
 
@@ -86,8 +112,16 @@ export function LandingScreen({
 
       <section className="landing-archive" aria-labelledby="archive-title">
         <div className="archive-heading">
-          <p className="file-label">目录页 / voices index</p>
-          <h2 id="archive-title">四卷分档，二十四种脑内证词。</h2>
+          <div className="archive-heading__head">
+            <div className="archive-heading__body">
+              <p className="file-label">目录页 / voices index</p>
+              <h2 id="archive-title">四卷分档，二十四种脑内证词。</h2>
+            </div>
+            <DossierArtifact
+              asset={dossierArtifactAssets.map}
+              className="dossier-artifact--map"
+            />
+          </div>
           <p>不是能力树，是四类不同的失控方式。</p>
         </div>
 

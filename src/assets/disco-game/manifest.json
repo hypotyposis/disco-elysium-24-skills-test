@@ -1,0 +1,220 @@
+{
+  "install_dir": "/Users/zooey/Library/Application Support/Steam/steamapps/common/Disco Elysium",
+  "exports": [
+    {
+      "source_bundle": "/Users/zooey/Library/Application Support/Steam/steamapps/common/Disco Elysium/disco.app/Contents/Resources/Data/StreamingAssets/AssetBundles/OSX/shared/content.bundle",
+      "container_key": "assets/icons/textures/backgrounds/dialogue images/disco_elysium.png",
+      "output_path": "/Users/zooey/Workspace/disco-skills-test/src/assets/disco-game/backgrounds/disco_elysium.png"
+    },
+    {
+      "source_bundle": "/Users/zooey/Library/Application Support/Steam/steamapps/common/Disco Elysium/disco.app/Contents/Resources/Data/StreamingAssets/AssetBundles/OSX/shared/content.bundle",
+      "container_key": "assets/icons/textures/backgrounds/dialogue images/disco_elysium_clean.png",
+      "output_path": "/Users/zooey/Workspace/disco-skills-test/src/assets/disco-game/backgrounds/disco_elysium_clean.png"
+    },
+    {
+      "source_bundle": "/Users/zooey/Library/Application Support/Steam/steamapps/common/Disco Elysium/disco.app/Contents/Resources/Data/StreamingAssets/AssetBundles/OSX/shared/content.bundle",
+      "container_key": "assets/icons/textures/backgrounds/dialogue images/lobby_backdrop.png",
+      "output_path": "/Users/zooey/Workspace/disco-skills-test/src/assets/disco-game/backgrounds/lobby_backdrop.png"
+    },
+    {
+      "source_bundle": "/Users/zooey/Library/Application Support/Steam/steamapps/common/Disco Elysium/disco.app/Contents/Resources/Data/StreamingAssets/AssetBundles/OSX/shared/content.bundle",
+      "container_key": "assets/icons/textures/backgrounds/dialogue images/tequila_face.png",
+      "output_path": "/Users/zooey/Workspace/disco-skills-test/src/assets/disco-game/backgrounds/tequila_face.png"
+    },
+    {
+      "source_bundle": "/Users/zooey/Library/Application Support/Steam/steamapps/common/Disco Elysium/disco.app/Contents/Resources/Data/StreamingAssets/AssetBundles/OSX/shared/content.bundle",
+      "container_key": "assets/icons/textures/backgrounds/dialogue images/photo_hanged.png",
+      "output_path": "/Users/zooey/Workspace/disco-skills-test/src/assets/disco-game/backgrounds/photo_hanged.png"
+    },
+    {
+      "source_bundle": "/Users/zooey/Library/Application Support/Steam/steamapps/common/Disco Elysium/disco.app/Contents/Resources/Data/StreamingAssets/AssetBundles/OSX/shared/content.bundle",
+      "container_key": "assets/icons/textures/backgrounds/dialogue images/photo_phasmid.png",
+      "output_path": "/Users/zooey/Workspace/disco-skills-test/src/assets/disco-game/backgrounds/photo_phasmid.png"
+    },
+    {
+      "source_bundle": "/Users/zooey/Library/Application Support/Steam/steamapps/common/Disco Elysium/disco.app/Contents/Resources/Data/StreamingAssets/AssetBundles/OSX/shared/content.bundle",
+      "container_key": "assets/icons/textures/backgrounds/dialogue images/darkness.png",
+      "output_path": "/Users/zooey/Workspace/disco-skills-test/src/assets/disco-game/backgrounds/darkness.png"
+    },
+    {
+      "source_bundle": "/Users/zooey/Library/Application Support/Steam/steamapps/common/Disco Elysium/disco.app/Contents/Resources/Data/StreamingAssets/AssetBundles/OSX/shared/content.bundle",
+      "container_key": "assets/icons/textures/backgrounds/dialogue images/redness.png",
+      "output_path": "/Users/zooey/Workspace/disco-skills-test/src/assets/disco-game/backgrounds/redness.png"
+    },
+    {
+      "source_bundle": "/Users/zooey/Library/Application Support/Steam/steamapps/common/Disco Elysium/disco.app/Contents/Resources/Data/StreamingAssets/AssetBundles/OSX/shared/content.bundle",
+      "container_key": "assets/icons/textures/backgrounds/dialogue images/whiteness.png",
+      "output_path": "/Users/zooey/Workspace/disco-skills-test/src/assets/disco-game/backgrounds/whiteness.png"
+    },
+    {
+      "source_bundle": "/Users/zooey/Library/Application Support/Steam/steamapps/common/Disco Elysium/disco.app/Contents/Resources/Data/StreamingAssets/aa/StandaloneOSX/portraits_assets_all_20cb6ebb4142293ab462ee211f2e2afc.bundle",
+      "container_key": "Assets/Addressables Resources/NPC_portraits/portrait_logic.png",
+      "output_path": "/Users/zooey/Workspace/disco-skills-test/src/assets/disco-game/skill-portraits/logic.png"
+    },
+    {
+      "source_bundle": "/Users/zooey/Library/Application Support/Steam/steamapps/common/Disco Elysium/disco.app/Contents/Resources/Data/StreamingAssets/aa/StandaloneOSX/portraits_assets_all_20cb6ebb4142293ab462ee211f2e2afc.bundle",
+      "container_key": "Assets/Addressables Resources/NPC_portraits/portrait_encyclopedia.png",
+      "output_path": "/Users/zooey/Workspace/disco-skills-test/src/assets/disco-game/skill-portraits/encyclopedia.png"
+    },
+    {
+      "source_bundle": "/Users/zooey/Library/Application Support/Steam/steamapps/common/Disco Elysium/disco.app/Contents/Resources/Data/StreamingAssets/aa/StandaloneOSX/portraits_assets_all_20cb6ebb4142293ab462ee211f2e2afc.bundle",
+      "container_key": "Assets/Addressables Resources/NPC_portraits/portrait_rhetoric.png",
+      "output_path": "/Users/zooey/Workspace/disco-skills-test/src/assets/disco-game/skill-portraits/rhetoric.png"
+    },
+    {
+      "source_bundle": "/Users/zooey/Library/Application Support/Steam/steamapps/common/Disco Elysium/disco.app/Contents/Resources/Data/StreamingAssets/aa/StandaloneOSX/portraits_assets_all_20cb6ebb4142293ab462ee211f2e2afc.bundle",
+      "container_key": "Assets/Addressables Resources/NPC_portraits/portrait_drama_rank1.png",
+      "output_path": "/Users/zooey/Workspace/disco-skills-test/src/assets/disco-game/skill-portraits/drama.png"
+    },
+    {
+      "source_bundle": "/Users/zooey/Library/Application Support/Steam/steamapps/common/Disco Elysium/disco.app/Contents/Resources/Data/StreamingAssets/aa/StandaloneOSX/portraits_assets_all_20cb6ebb4142293ab462ee211f2e2afc.bundle",
+      "container_key": "Assets/Addressables Resources/NPC_portraits/portrait_conceptualization_rank1.png",
+      "output_path": "/Users/zooey/Workspace/disco-skills-test/src/assets/disco-game/skill-portraits/conceptualization.png"
+    },
+    {
+      "source_bundle": "/Users/zooey/Library/Application Support/Steam/steamapps/common/Disco Elysium/disco.app/Contents/Resources/Data/StreamingAssets/aa/StandaloneOSX/portraits_assets_all_20cb6ebb4142293ab462ee211f2e2afc.bundle",
+      "container_key": "Assets/Addressables Resources/NPC_portraits/portrait_visual-calculus_rank1.png",
+      "output_path": "/Users/zooey/Workspace/disco-skills-test/src/assets/disco-game/skill-portraits/visual-calculus.png"
+    },
+    {
+      "source_bundle": "/Users/zooey/Library/Application Support/Steam/steamapps/common/Disco Elysium/disco.app/Contents/Resources/Data/StreamingAssets/aa/StandaloneOSX/portraits_assets_all_20cb6ebb4142293ab462ee211f2e2afc.bundle",
+      "container_key": "Assets/Addressables Resources/NPC_portraits/portrait_volition.png",
+      "output_path": "/Users/zooey/Workspace/disco-skills-test/src/assets/disco-game/skill-portraits/volition.png"
+    },
+    {
+      "source_bundle": "/Users/zooey/Library/Application Support/Steam/steamapps/common/Disco Elysium/disco.app/Contents/Resources/Data/StreamingAssets/aa/StandaloneOSX/portraits_assets_all_20cb6ebb4142293ab462ee211f2e2afc.bundle",
+      "container_key": "Assets/Addressables Resources/NPC_portraits/portrait_inland-empire.png",
+      "output_path": "/Users/zooey/Workspace/disco-skills-test/src/assets/disco-game/skill-portraits/inland-empire.png"
+    },
+    {
+      "source_bundle": "/Users/zooey/Library/Application Support/Steam/steamapps/common/Disco Elysium/disco.app/Contents/Resources/Data/StreamingAssets/aa/StandaloneOSX/portraits_assets_all_20cb6ebb4142293ab462ee211f2e2afc.bundle",
+      "container_key": "Assets/Addressables Resources/NPC_portraits/portrait_empathy_rank1.png",
+      "output_path": "/Users/zooey/Workspace/disco-skills-test/src/assets/disco-game/skill-portraits/empathy.png"
+    },
+    {
+      "source_bundle": "/Users/zooey/Library/Application Support/Steam/steamapps/common/Disco Elysium/disco.app/Contents/Resources/Data/StreamingAssets/aa/StandaloneOSX/portraits_assets_all_20cb6ebb4142293ab462ee211f2e2afc.bundle",
+      "container_key": "Assets/Addressables Resources/NPC_portraits/portrait_authority.png",
+      "output_path": "/Users/zooey/Workspace/disco-skills-test/src/assets/disco-game/skill-portraits/authority.png"
+    },
+    {
+      "source_bundle": "/Users/zooey/Library/Application Support/Steam/steamapps/common/Disco Elysium/disco.app/Contents/Resources/Data/StreamingAssets/aa/StandaloneOSX/portraits_assets_all_20cb6ebb4142293ab462ee211f2e2afc.bundle",
+      "container_key": "Assets/Addressables Resources/NPC_portraits/portrait_esprit-de-Corps.png",
+      "output_path": "/Users/zooey/Workspace/disco-skills-test/src/assets/disco-game/skill-portraits/esprit-de-corps.png"
+    },
+    {
+      "source_bundle": "/Users/zooey/Library/Application Support/Steam/steamapps/common/Disco Elysium/disco.app/Contents/Resources/Data/StreamingAssets/aa/StandaloneOSX/portraits_assets_all_20cb6ebb4142293ab462ee211f2e2afc.bundle",
+      "container_key": "Assets/Addressables Resources/NPC_portraits/portrait_suggestion.png",
+      "output_path": "/Users/zooey/Workspace/disco-skills-test/src/assets/disco-game/skill-portraits/suggestion.png"
+    },
+    {
+      "source_bundle": "/Users/zooey/Library/Application Support/Steam/steamapps/common/Disco Elysium/disco.app/Contents/Resources/Data/StreamingAssets/aa/StandaloneOSX/portraits_assets_all_20cb6ebb4142293ab462ee211f2e2afc.bundle",
+      "container_key": "Assets/Addressables Resources/NPC_portraits/portrait_endurance.png",
+      "output_path": "/Users/zooey/Workspace/disco-skills-test/src/assets/disco-game/skill-portraits/endurance.png"
+    },
+    {
+      "source_bundle": "/Users/zooey/Library/Application Support/Steam/steamapps/common/Disco Elysium/disco.app/Contents/Resources/Data/StreamingAssets/aa/StandaloneOSX/portraits_assets_all_20cb6ebb4142293ab462ee211f2e2afc.bundle",
+      "container_key": "Assets/Addressables Resources/NPC_portraits/portrait_pain-threshold.png",
+      "output_path": "/Users/zooey/Workspace/disco-skills-test/src/assets/disco-game/skill-portraits/pain-threshold.png"
+    },
+    {
+      "source_bundle": "/Users/zooey/Library/Application Support/Steam/steamapps/common/Disco Elysium/disco.app/Contents/Resources/Data/StreamingAssets/aa/StandaloneOSX/portraits_assets_all_20cb6ebb4142293ab462ee211f2e2afc.bundle",
+      "container_key": "Assets/Addressables Resources/NPC_portraits/portrait_physical-instrument.png",
+      "output_path": "/Users/zooey/Workspace/disco-skills-test/src/assets/disco-game/skill-portraits/physical-instrument.png"
+    },
+    {
+      "source_bundle": "/Users/zooey/Library/Application Support/Steam/steamapps/common/Disco Elysium/disco.app/Contents/Resources/Data/StreamingAssets/aa/StandaloneOSX/portraits_assets_all_20cb6ebb4142293ab462ee211f2e2afc.bundle",
+      "container_key": "Assets/Addressables Resources/NPC_portraits/portrait_electrochemistry.png",
+      "output_path": "/Users/zooey/Workspace/disco-skills-test/src/assets/disco-game/skill-portraits/electrochemistry.png"
+    },
+    {
+      "source_bundle": "/Users/zooey/Library/Application Support/Steam/steamapps/common/Disco Elysium/disco.app/Contents/Resources/Data/StreamingAssets/aa/StandaloneOSX/portraits_assets_all_20cb6ebb4142293ab462ee211f2e2afc.bundle",
+      "container_key": "Assets/Addressables Resources/NPC_portraits/portrait_shivers.png",
+      "output_path": "/Users/zooey/Workspace/disco-skills-test/src/assets/disco-game/skill-portraits/shivers.png"
+    },
+    {
+      "source_bundle": "/Users/zooey/Library/Application Support/Steam/steamapps/common/Disco Elysium/disco.app/Contents/Resources/Data/StreamingAssets/aa/StandaloneOSX/portraits_assets_all_20cb6ebb4142293ab462ee211f2e2afc.bundle",
+      "container_key": "Assets/Addressables Resources/NPC_portraits/portrait_half-light.png",
+      "output_path": "/Users/zooey/Workspace/disco-skills-test/src/assets/disco-game/skill-portraits/half-light.png"
+    },
+    {
+      "source_bundle": "/Users/zooey/Library/Application Support/Steam/steamapps/common/Disco Elysium/disco.app/Contents/Resources/Data/StreamingAssets/aa/StandaloneOSX/portraits_assets_all_20cb6ebb4142293ab462ee211f2e2afc.bundle",
+      "container_key": "Assets/Addressables Resources/NPC_portraits/portrait_he_coordination.png",
+      "output_path": "/Users/zooey/Workspace/disco-skills-test/src/assets/disco-game/skill-portraits/hand-eye-coordination.png"
+    },
+    {
+      "source_bundle": "/Users/zooey/Library/Application Support/Steam/steamapps/common/Disco Elysium/disco.app/Contents/Resources/Data/StreamingAssets/aa/StandaloneOSX/portraits_assets_all_20cb6ebb4142293ab462ee211f2e2afc.bundle",
+      "container_key": "Assets/Addressables Resources/NPC_portraits/portrait_perception.png",
+      "output_path": "/Users/zooey/Workspace/disco-skills-test/src/assets/disco-game/skill-portraits/perception-sight.png"
+    },
+    {
+      "source_bundle": "/Users/zooey/Library/Application Support/Steam/steamapps/common/Disco Elysium/disco.app/Contents/Resources/Data/StreamingAssets/aa/StandaloneOSX/portraits_assets_all_20cb6ebb4142293ab462ee211f2e2afc.bundle",
+      "container_key": "Assets/Addressables Resources/NPC_portraits/portrait_reaction.png",
+      "output_path": "/Users/zooey/Workspace/disco-skills-test/src/assets/disco-game/skill-portraits/reaction-speed.png"
+    },
+    {
+      "source_bundle": "/Users/zooey/Library/Application Support/Steam/steamapps/common/Disco Elysium/disco.app/Contents/Resources/Data/StreamingAssets/aa/StandaloneOSX/portraits_assets_all_20cb6ebb4142293ab462ee211f2e2afc.bundle",
+      "container_key": "Assets/Addressables Resources/NPC_portraits/portrait_savoir-faire.png",
+      "output_path": "/Users/zooey/Workspace/disco-skills-test/src/assets/disco-game/skill-portraits/savoir-faire.png"
+    },
+    {
+      "source_bundle": "/Users/zooey/Library/Application Support/Steam/steamapps/common/Disco Elysium/disco.app/Contents/Resources/Data/StreamingAssets/aa/StandaloneOSX/portraits_assets_all_20cb6ebb4142293ab462ee211f2e2afc.bundle",
+      "container_key": "Assets/Addressables Resources/NPC_portraits/portrait_interfacing.png",
+      "output_path": "/Users/zooey/Workspace/disco-skills-test/src/assets/disco-game/skill-portraits/interfacing.png"
+    },
+    {
+      "source_bundle": "/Users/zooey/Library/Application Support/Steam/steamapps/common/Disco Elysium/disco.app/Contents/Resources/Data/StreamingAssets/aa/StandaloneOSX/portraits_assets_all_20cb6ebb4142293ab462ee211f2e2afc.bundle",
+      "container_key": "Assets/Addressables Resources/NPC_portraits/portrait_composure.png",
+      "output_path": "/Users/zooey/Workspace/disco-skills-test/src/assets/disco-game/skill-portraits/composure.png"
+    },
+    {
+      "source_bundle": "/Users/zooey/Library/Application Support/Steam/steamapps/common/Disco Elysium/disco.app/Contents/Resources/Data/StreamingAssets/aa/StandaloneOSX/invetory_icons_assets_all_ad89bf7a84feeaaba64cb59774fe7558.bundle",
+      "container_key": "Assets/Addressables Resources/inventory_icons/badge.png",
+      "output_path": "/Users/zooey/Workspace/disco-skills-test/src/assets/disco-game/icons/badge.png"
+    },
+    {
+      "source_bundle": "/Users/zooey/Library/Application Support/Steam/steamapps/common/Disco Elysium/disco.app/Contents/Resources/Data/StreamingAssets/aa/StandaloneOSX/invetory_icons_assets_all_ad89bf7a84feeaaba64cb59774fe7558.bundle",
+      "container_key": "Assets/Addressables Resources/inventory_icons/blue_oblong_pen.png",
+      "output_path": "/Users/zooey/Workspace/disco-skills-test/src/assets/disco-game/icons/blue_oblong_pen.png"
+    },
+    {
+      "source_bundle": "/Users/zooey/Library/Application Support/Steam/steamapps/common/Disco Elysium/disco.app/Contents/Resources/Data/StreamingAssets/aa/StandaloneOSX/invetory_icons_assets_all_ad89bf7a84feeaaba64cb59774fe7558.bundle",
+      "container_key": "Assets/Addressables Resources/inventory_icons/ledger_damaged.png",
+      "output_path": "/Users/zooey/Workspace/disco-skills-test/src/assets/disco-game/icons/ledger_damaged.png"
+    },
+    {
+      "source_bundle": "/Users/zooey/Library/Application Support/Steam/steamapps/common/Disco Elysium/disco.app/Contents/Resources/Data/StreamingAssets/aa/StandaloneOSX/invetory_icons_assets_all_ad89bf7a84feeaaba64cb59774fe7558.bundle",
+      "container_key": "Assets/Addressables Resources/inventory_icons/ledger_oblivion.png",
+      "output_path": "/Users/zooey/Workspace/disco-skills-test/src/assets/disco-game/icons/ledger_oblivion.png"
+    },
+    {
+      "source_bundle": "/Users/zooey/Library/Application Support/Steam/steamapps/common/Disco Elysium/disco.app/Contents/Resources/Data/StreamingAssets/aa/StandaloneOSX/invetory_icons_assets_all_ad89bf7a84feeaaba64cb59774fe7558.bundle",
+      "container_key": "Assets/Addressables Resources/inventory_icons/ledger_of_failure_and_hatred.png",
+      "output_path": "/Users/zooey/Workspace/disco-skills-test/src/assets/disco-game/icons/ledger_of_failure_and_hatred.png"
+    },
+    {
+      "source_bundle": "/Users/zooey/Library/Application Support/Steam/steamapps/common/Disco Elysium/disco.app/Contents/Resources/Data/StreamingAssets/aa/StandaloneOSX/invetory_icons_assets_all_ad89bf7a84feeaaba64cb59774fe7558.bundle",
+      "container_key": "Assets/Addressables Resources/inventory_icons/map_of_martinaise.png",
+      "output_path": "/Users/zooey/Workspace/disco-skills-test/src/assets/disco-game/icons/map_of_martinaise.png"
+    },
+    {
+      "source_bundle": "/Users/zooey/Library/Application Support/Steam/steamapps/common/Disco Elysium/disco.app/Contents/Resources/Data/StreamingAssets/aa/StandaloneOSX/invetory_icons_assets_all_ad89bf7a84feeaaba64cb59774fe7558.bundle",
+      "container_key": "Assets/Addressables Resources/inventory_icons/flashlight.png",
+      "output_path": "/Users/zooey/Workspace/disco-skills-test/src/assets/disco-game/icons/flashlight.png"
+    },
+    {
+      "source_bundle": "/Users/zooey/Library/Application Support/Steam/steamapps/common/Disco Elysium/disco.app/Contents/Resources/Data/StreamingAssets/aa/StandaloneOSX/invetory_icons_assets_all_ad89bf7a84feeaaba64cb59774fe7558.bundle",
+      "container_key": "Assets/Addressables Resources/inventory_icons/boombox.png",
+      "output_path": "/Users/zooey/Workspace/disco-skills-test/src/assets/disco-game/icons/boombox.png"
+    },
+    {
+      "source_bundle": "/Users/zooey/Library/Application Support/Steam/steamapps/common/Disco Elysium/disco.app/Contents/Resources/Data/StreamingAssets/aa/StandaloneOSX/invetory_icons_assets_all_ad89bf7a84feeaaba64cb59774fe7558.bundle",
+      "container_key": "Assets/Addressables Resources/inventory_icons/Money.png",
+      "output_path": "/Users/zooey/Workspace/disco-skills-test/src/assets/disco-game/icons/money.png"
+    },
+    {
+      "source_bundle": "/Users/zooey/Library/Application Support/Steam/steamapps/common/Disco Elysium/disco.app/Contents/Resources/Data/StreamingAssets/aa/StandaloneOSX/invetory_icons_assets_all_ad89bf7a84feeaaba64cb59774fe7558.bundle",
+      "container_key": "Assets/Addressables Resources/inventory_icons/kind_green_ape_pen.png",
+      "output_path": "/Users/zooey/Workspace/disco-skills-test/src/assets/disco-game/icons/kind_green_ape_pen.png"
+    }
+  ]
+}

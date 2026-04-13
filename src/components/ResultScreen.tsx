@@ -1,9 +1,15 @@
 import { useState } from 'react'
 
+import {
+  buildVoicePortraitLineup,
+  dossierArtifactAssets,
+  getSkillPortraitAsset,
+} from '../data/discoAssets.ts'
 import { skillFlavorNotes } from '../data/resultCopy.ts'
 import type { ResultNarrative } from '../lib/resultNarrative.ts'
 import type { DiscoReference, QuizResult } from '../types/quiz.ts'
 import { AttributeDiamond } from './AttributeDiamond.tsx'
+import { DossierArtifact } from './DossierArtifact.tsx'
 
 interface ResultScreenProps {
   reference: DiscoReference
@@ -20,6 +26,8 @@ export function ResultScreen({
 }: ResultScreenProps) {
   const [copied, setCopied] = useState(false)
   const maxSkillScore = Math.max(result.primarySkill.score, 1)
+  const primaryPortrait = getSkillPortraitAsset(result.primarySkill.english)
+  const voicePortraitLineup = buildVoicePortraitLineup(result.top3Skills)
   const rankedAttributes = [...reference.attributes].sort((left, right) => {
     const scoreDelta =
       result.attributeScores[right.english] -
@@ -66,18 +74,59 @@ export function ResultScreen({
         </div>
 
         <div className="verdict-sheet__body">
-          <div className="verdict-nameblock">
-            <p className="verdict-nameblock__prefix">主导技能</p>
-            <h1>{result.primarySkill.chinese}</h1>
-            <p className="verdict-nameblock__english">
-              {result.primarySkill.english}
-            </p>
+          <div className="verdict-sheet__copy">
+            <div className="verdict-nameblock">
+              <p className="verdict-nameblock__prefix">主导技能</p>
+              <h1>{result.primarySkill.chinese}</h1>
+              <p className="verdict-nameblock__english">
+                {result.primarySkill.english}
+              </p>
+            </div>
+
+            <div className="verdict-summary">
+              <p className="verdict-summary__lead">{narrative.punchline}</p>
+              <p>{narrative.summary}</p>
+            </div>
           </div>
 
-          <div className="verdict-summary">
-            <p className="verdict-summary__lead">{narrative.punchline}</p>
-            <p>{narrative.summary}</p>
-          </div>
+          {primaryPortrait && (
+            <div className="verdict-portrait-panel">
+              <figure className="verdict-portrait-frame">
+                <img
+                  alt={`${result.primarySkill.chinese} ${result.primarySkill.english} 肖像`}
+                  className="verdict-portrait-frame__image"
+                  loading="eager"
+                  src={primaryPortrait.src}
+                />
+                <figcaption className="verdict-portrait-frame__label">
+                  <span>主导声部 / lead voice</span>
+                  <strong>{result.primarySkill.chinese}</strong>
+                </figcaption>
+              </figure>
+
+              <ol className="verdict-voice-lineup" aria-label="前三声部肖像">
+                {voicePortraitLineup.map((item) => (
+                  <li
+                    className={`verdict-voice-chip${item.isPrimary ? ' is-primary' : ''}`}
+                    key={item.skill.english}
+                  >
+                    <figure className="verdict-voice-chip__portrait">
+                      <img
+                        alt={`${item.skill.chinese} ${item.skill.english} 肖像`}
+                        loading={item.isPrimary ? 'eager' : 'lazy'}
+                        src={item.portrait.src}
+                      />
+                    </figure>
+                    <div className="verdict-voice-chip__meta">
+                      <span>{item.rankLabel}</span>
+                      <strong>{item.skill.chinese}</strong>
+                      <small>{item.skill.english}</small>
+                    </div>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          )}
         </div>
 
         <div className="verdict-fragments">
@@ -111,9 +160,15 @@ export function ResultScreen({
 
       <div className="result-dossier-grid">
         <section className="case-notes">
-          <div className="section-record">
-            <p className="file-label">回响记录</p>
-            <h2>最响的三份证词</h2>
+          <div className="section-record section-record--artifact">
+            <div className="section-record__stack">
+              <p className="file-label">回响记录</p>
+              <h2>最响的三份证词</h2>
+            </div>
+            <DossierArtifact
+              asset={dossierArtifactAssets.ledger}
+              className="dossier-artifact--ledger"
+            />
           </div>
 
           <ol className="voice-dockets">
@@ -141,6 +196,10 @@ export function ResultScreen({
         </section>
 
         <aside className="thought-note">
+          <DossierArtifact
+            asset={dossierArtifactAssets.pen}
+            className="dossier-artifact--pen thought-note__artifact"
+          />
           <p className="file-label">思维橱柜倾向</p>
           <h2>{narrative.thoughtTitle}</h2>
           <p>{narrative.thoughtBody}</p>
