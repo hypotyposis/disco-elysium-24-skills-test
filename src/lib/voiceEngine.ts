@@ -7,15 +7,15 @@ export interface VoiceLine {
   skillEnglish: string
   skillChinese: string
   text: string
-  role: 'dominant' | 'contrarian'
+  role: 'approve' | 'dissent'
 }
 
 export interface VoiceCommentary {
-  dominant: VoiceLine | null
-  contrarian: VoiceLine | null
+  approve: VoiceLine | null
+  dissent: VoiceLine | null
 }
 
-type TriggerType = 'approve' | 'mock' | 'warn' | 'tempt' | 'contrarian'
+type TriggerType = 'approve' | 'mock' | 'warn' | 'tempt'
 
 export interface VoicePack {
   skillId: string
@@ -82,15 +82,16 @@ export function computeDeltas(
 }
 
 /**
- * Find the skill with the highest positive delta.
+ * Find the top skill from a set of deltas.
  * Ties broken by cumulative score, then reference order.
  */
-function findDominantSkill(
+function findTopSkill(
   deltas: Record<string, number>,
   cumulativeScores: Record<string, number>,
+  exclude?: string,
 ): string | null {
   const skills = Object.entries(deltas)
-    .filter(([, d]) => d > 0)
+    .filter(([id, d]) => d > 0 && id !== exclude)
     .sort((a, b) => {
       const deltaGap = b[1] - a[1]
       if (deltaGap !== 0) return deltaGap
@@ -101,12 +102,75 @@ function findDominantSkill(
 }
 
 /**
+ * Compute deltas for the "opposite" choice — the skills that would
+ * have been activated if the player chose differently.
+ *
+ * For likert: if player agreed, return the disagree vector's skills (and vice versa).
+ * For scenario: return the highest-weight skills across all non-selected options.
+ */
+function computeOppositeDeltas(
+  question: QuizQuestion,
+  answerValue: QuizAnswer['value'],
+): Record<string, number> {
+  const deltas: Record<string, number> = {}
+
+  if (question.kind === 'likert') {
+    const intensity = Math.min(Math.max(Math.trunc(Number(answerValue)), -2), 2)
+    if (intensity === 0) return deltas
+
+    // If player agreed, the "opposite" skills are from the disagree vector
+    const oppositeVector: ScoreVector =
+      intensity > 0 ? question.disagree : question.agree
+
+    if (oppositeVector.skills) {
+      for (const [skill, weight] of Object.entries(oppositeVector.skills)) {
+        if (weight) deltas[skill] = weight * 2 // max intensity
+      }
+    }
+  } else {
+    // For scenario: gather skills from all non-selected options
+    for (const option of question.options) {
+      if (option.id === answerValue) continue
+      if (option.effects.skills) {
+        for (const [skill, weight] of Object.entries(option.effects.skills)) {
+          if (weight && weight > (deltas[skill] ?? 0)) {
+            deltas[skill] = weight
+          }
+        }
+      }
+    }
+  }
+
+  return deltas
+}
+
+function buildVoiceLine(
+  skillId: string,
+  pack: VoicePack | undefined,
+  trigger: TriggerType,
+  ctx: VoiceContext,
+  role: VoiceLine['role'],
+): VoiceLine | null {
+  const template = pickRandom(pack?.voice[trigger] ?? [])
+  if (!template) return null
+
+  const skill = skillMap[skillId]
+  return {
+    skillEnglish: skillId,
+    skillChinese: skill?.chinese ?? skillId,
+    text: fillTemplate(template, ctx),
+    role,
+  }
+}
+
+/**
  * Generate voice commentary for a single answered question.
  *
- * Returns null commentary lines if:
- * - no skill had a positive delta (zero-delta rule)
- * - no voice pack exists for the skill
- * - the voice pack has no lines for the trigger type
+ * Two skills react to the player's choice:
+ * - The approving skill: got the highest boost from this answer → uses 'approve'
+ * - The dissenting skill: would have been boosted by a different answer → uses 'mock'
+ *
+ * Both address the player directly about their choice.
  */
 export function generateCommentary(
   question: QuizQuestion,
@@ -117,57 +181,56 @@ export function generateCommentary(
   choiceLabel: string,
 ): VoiceCommentary {
   const deltas = computeDeltas(question, answerValue)
-  const dominantId = findDominantSkill(deltas, cumulativeScores)
+  const approveId = findTopSkill(deltas, cumulativeScores)
 
-  if (!dominantId) {
-    return { dominant: null, contrarian: null }
+  if (!approveId) {
+    return { approve: null, dissent: null }
   }
 
-  const rivalId = rivalMap[dominantId] ?? null
-  const dominantSkill = skillMap[dominantId]
-  const rivalSkill = rivalId ? skillMap[rivalId] : undefined
+  // Find the dissenting skill: top skill from the opposite choice
+  const oppositeDeltas = computeOppositeDeltas(question, answerValue)
+  const dissentId = findTopSkill(oppositeDeltas, cumulativeScores, approveId)
 
-  const dominantPack = voicePacks[dominantId]
-  const rivalPack = rivalId ? voicePacks[rivalId] : undefined
+  const approveSkill = skillMap[approveId]
+  const dissentSkill = dissentId ? skillMap[dissentId] : undefined
 
-  const triggerType: TriggerType =
-    (deltas[dominantId] ?? 0) > 0 ? 'approve' : 'mock'
-
-  const ctx: VoiceContext = {
+  const approveCtx: VoiceContext = {
     choice: choiceLabel,
-    attribute: dominantSkill?.attributeChinese ?? '',
-    skillName: dominantSkill?.chinese ?? dominantId,
-    rivalSkill: rivalSkill?.chinese ?? '',
-    score: cumulativeScores[dominantId] ?? 0,
+    attribute: approveSkill?.attributeChinese ?? '',
+    skillName: approveSkill?.chinese ?? approveId,
+    rivalSkill: dissentSkill?.chinese ?? '',
+    score: cumulativeScores[approveId] ?? 0,
     questionNum,
   }
 
-  const dominantTemplate = pickRandom(dominantPack?.voice[triggerType] ?? [])
-  const contrarianTemplate = pickRandom(rivalPack?.voice.contrarian ?? [])
+  const approve = buildVoiceLine(
+    approveId,
+    voicePacks[approveId],
+    'approve',
+    approveCtx,
+    'approve',
+  )
 
-  return {
-    dominant: dominantTemplate
-      ? {
-          skillEnglish: dominantId,
-          skillChinese: dominantSkill?.chinese ?? dominantId,
-          text: fillTemplate(dominantTemplate, ctx),
-          role: 'dominant',
-        }
-      : null,
-    contrarian:
-      contrarianTemplate && rivalId
-        ? {
-            skillEnglish: rivalId,
-            skillChinese: rivalSkill?.chinese ?? rivalId,
-            text: fillTemplate(contrarianTemplate, {
-              ...ctx,
-              skillName: rivalSkill?.chinese ?? rivalId,
-              rivalSkill: dominantSkill?.chinese ?? dominantId,
-            }),
-            role: 'contrarian',
-          }
-        : null,
+  let dissent: VoiceLine | null = null
+  if (dissentId) {
+    const dissentCtx: VoiceContext = {
+      choice: choiceLabel,
+      attribute: dissentSkill?.attributeChinese ?? '',
+      skillName: dissentSkill?.chinese ?? dissentId,
+      rivalSkill: approveSkill?.chinese ?? '',
+      score: cumulativeScores[dissentId] ?? 0,
+      questionNum,
+    }
+    dissent = buildVoiceLine(
+      dissentId,
+      voicePacks[dissentId],
+      'mock',
+      dissentCtx,
+      'dissent',
+    )
   }
+
+  return { approve, dissent }
 }
 
 export interface SkillMonologueData {
@@ -183,6 +246,7 @@ export interface SkillMonologueData {
  * Build the result monologue from the dominant skill's voice data.
  * Combines the epilogue line, worldview, relations, and pressure
  * into a flowing personal address from the skill to the player.
+ * The rival skill interjects with a 'mock' line.
  */
 export function buildMonologue(
   result: QuizResult,
@@ -207,10 +271,10 @@ export function buildMonologue(
   }
 
   let rivalInterjection: string | null = null
-  if (rivalPack && flavor) {
-    const contrarianLine = pickRandom(rivalPack.voice.contrarian ?? [])
-    if (contrarianLine) {
-      rivalInterjection = fillTemplate(contrarianLine, {
+  if (rivalPack) {
+    const mockLine = pickRandom(rivalPack.voice.mock ?? [])
+    if (mockLine) {
+      rivalInterjection = fillTemplate(mockLine, {
         choice: '',
         attribute: primary.attributeChinese,
         skillName: rivalSkill?.chinese ?? '',

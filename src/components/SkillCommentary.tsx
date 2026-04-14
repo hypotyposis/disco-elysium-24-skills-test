@@ -6,54 +6,54 @@ interface SkillCommentaryProps {
 }
 
 export function SkillCommentary({ commentary }: SkillCommentaryProps) {
-  if (!commentary.dominant) return null
+  if (!commentary.approve) return null
 
-  const dominantPortrait = getSkillPortraitAsset(commentary.dominant.skillEnglish)
+  const approvePortrait = getSkillPortraitAsset(commentary.approve.skillEnglish)
 
   return (
     <div className="skill-commentary" aria-label="内心声音">
       <p className="skill-commentary__label">内心声音</p>
 
       <div className="skill-commentary__bubble">
-        {dominantPortrait && (
+        {approvePortrait && (
           <figure className="skill-commentary__portrait">
             <img
-              alt={`${commentary.dominant.skillChinese} 肖像`}
-              src={dominantPortrait.src}
+              alt={`${commentary.approve.skillChinese} 肖像`}
+              src={approvePortrait.src}
             />
           </figure>
         )}
         <div className="skill-commentary__copy">
           <span className="skill-commentary__name skill-commentary__name--dominant">
-            {commentary.dominant.skillChinese}
+            {commentary.approve.skillChinese}
           </span>
           <p className="skill-commentary__line">
-            {commentary.dominant.text}
+            {commentary.approve.text}
           </p>
         </div>
       </div>
 
-      {commentary.contrarian && (
+      {commentary.dissent && (
         <div className="skill-commentary__bubble skill-commentary__bubble--contrarian">
           {(() => {
-            const contrarianPortrait = getSkillPortraitAsset(
-              commentary.contrarian.skillEnglish,
+            const dissentPortrait = getSkillPortraitAsset(
+              commentary.dissent.skillEnglish,
             )
-            return contrarianPortrait ? (
+            return dissentPortrait ? (
               <figure className="skill-commentary__portrait">
                 <img
-                  alt={`${commentary.contrarian.skillChinese} 肖像`}
-                  src={contrarianPortrait.src}
+                  alt={`${commentary.dissent.skillChinese} 肖像`}
+                  src={dissentPortrait.src}
                 />
               </figure>
             ) : null
           })()}
           <div className="skill-commentary__copy">
             <span className="skill-commentary__name skill-commentary__name--contrarian">
-              {commentary.contrarian.skillChinese}
+              {commentary.dissent.skillChinese}
             </span>
             <p className="skill-commentary__line">
-              {commentary.contrarian.text}
+              {commentary.dissent.text}
             </p>
           </div>
         </div>

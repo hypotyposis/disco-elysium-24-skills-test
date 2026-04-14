@@ -225,7 +225,7 @@ export function QuizScreen({
             ))}
           </div>
 
-          {commentary && (commentary.dominant || commentary.contrarian) && (
+          {commentary && (commentary.approve || commentary.dissent) && (
             <SkillCommentary
               key={`commentary-${index}`}
               commentary={commentary}
