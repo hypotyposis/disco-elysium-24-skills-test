@@ -2017,7 +2017,7 @@ ul {
   object-fit: cover;
   object-position: center 26%;
   opacity: 0.66;
-  filter: sepia(0.24) saturate(0.72) contrast(1.18) brightness(0.7);
+  filter: sepia(0.16) saturate(0.82) contrast(1.08);
 }
 
 .scene-dossier__caption {

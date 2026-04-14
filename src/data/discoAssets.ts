@@ -265,40 +265,49 @@ function createAssignmentRecord<T extends string>(
 
 const quizBackdropByQuestionId = createAssignmentRecord<BackgroundKey>([
   {
-    value: 'whiteness',
-    ids: ['likert-evidence', 'likert-trivia', 'likert-reconstruction'],
-  },
-  {
     value: 'discoElysiumClean',
-    ids: ['likert-argument', 'likert-body-solution', 'scenario-machine'],
+    ids: [
+      'likert-evidence',
+      'likert-argument',
+      'likert-body-solution',
+      'scenario-machine',
+    ],
   },
   {
     value: 'lobbyBackdrop',
-    ids: ['likert-performance', 'likert-badge', 'scenario-bar'],
+    ids: ['likert-performance', 'likert-badge', 'scenario-bar', 'likert-trivia'],
   },
   {
     value: 'photoPhasmid',
-    ids: ['likert-aesthetic', 'likert-soft-persuasion', 'scenario-letter'],
-  },
-  {
-    value: 'darkness',
-    ids: ['likert-self-control', 'likert-pain', 'scenario-crime-scene'],
-  },
-  {
-    value: 'redness',
-    ids: ['likert-emotional-cues', 'likert-dominance', 'scenario-shot'],
-  },
-  {
-    value: 'tequilaFace',
-    ids: ['likert-temptation', 'scenario-bottle'],
+    ids: [
+      'likert-aesthetic',
+      'likert-soft-persuasion',
+      'scenario-letter',
+      'likert-reconstruction',
+    ],
   },
   {
     value: 'photoHanged',
-    ids: ['likert-city-voice', 'likert-sensory-scan', 'scenario-lie'],
+    ids: [
+      'likert-self-control',
+      'likert-city-voice',
+      'likert-sensory-scan',
+      'scenario-lie',
+      'scenario-crime-scene',
+    ],
+  },
+  {
+    value: 'tequilaFace',
+    ids: [
+      'likert-temptation',
+      'likert-emotional-cues',
+      'scenario-bottle',
+      'likert-pain',
+    ],
   },
   {
     value: 'discoElysium',
-    ids: ['scenario-partner'],
+    ids: ['likert-dominance', 'scenario-shot', 'scenario-partner'],
   },
 ])
 
@@ -342,14 +351,13 @@ const quizArtifactByQuestionId = createAssignmentRecord<DossierArtifactKey>([
 ])
 
 const posterBackdropBySkill = createAssignmentRecord<BackgroundKey>([
-  { value: 'whiteness', ids: ['Logic', 'Encyclopedia', 'Volition'] },
   {
     value: 'discoElysiumClean',
-    ids: ['Visual Calculus', 'Interfacing', 'Composure'],
+    ids: ['Logic', 'Encyclopedia', 'Visual Calculus', 'Interfacing', 'Composure'],
   },
   {
     value: 'photoPhasmid',
-    ids: ['Conceptualization', 'Inland Empire', 'Empathy'],
+    ids: ['Conceptualization', 'Inland Empire', 'Empathy', 'Volition'],
   },
   {
     value: 'lobbyBackdrop',
@@ -359,14 +367,20 @@ const posterBackdropBySkill = createAssignmentRecord<BackgroundKey>([
     value: 'tequilaFace',
     ids: ['Electrochemistry', 'Savoir Faire', 'Reaction Speed'],
   },
-  { value: 'redness', ids: ['Authority', 'Rhetoric', 'Half Light'] },
   {
-    value: 'darkness',
-    ids: ['Endurance', 'Pain Threshold', 'Physical Instrument'],
+    value: 'discoElysium',
+    ids: ['Authority', 'Rhetoric', 'Half Light'],
   },
   {
     value: 'photoHanged',
-    ids: ['Shivers', 'Perception (Sight)', 'Hand/Eye Coordination'],
+    ids: [
+      'Endurance',
+      'Pain Threshold',
+      'Physical Instrument',
+      'Shivers',
+      'Perception (Sight)',
+      'Hand/Eye Coordination',
+    ],
   },
 ])
 
@@ -378,10 +392,10 @@ const posterArtifactByAttribute: Record<AttributeKey, DossierArtifactKey> = {
 }
 
 const posterBackdropByAttribute: Record<AttributeKey, BackgroundKey> = {
-  Intellect: 'whiteness',
+  Intellect: 'discoElysiumClean',
   Psyche: 'photoPhasmid',
-  Fysique: 'darkness',
-  Motorics: 'discoElysiumClean',
+  Fysique: 'photoHanged',
+  Motorics: 'lobbyBackdrop',
 }
 
 export function normalizeSkillPortraitSlug(skillName: string): string {
@@ -444,7 +458,7 @@ export function getQuizQuestionSceneSpec(
     backdrop:
       backgroundArtAssets[
         quizBackdropByQuestionId[question.id] ??
-          (question.kind === 'likert' ? 'whiteness' : 'darkness')
+          (question.kind === 'likert' ? 'discoElysiumClean' : 'photoHanged')
       ],
     lead:
       question.kind === 'likert'
