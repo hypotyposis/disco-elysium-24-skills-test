@@ -33,9 +33,17 @@ export function CharacterReviewSection({
               className={`character-card character-card--${character.characterId}`}
               key={character.characterId}
             >
-              <div className="character-card__head">
-                <strong>{character.characterName}</strong>
-                <span>{character.characterTitle}</span>
+              <div className="character-card__header">
+                <figure className="character-card__portrait">
+                  <img
+                    alt={`${character.characterName} 肖像`}
+                    src={character.portraitSrc}
+                  />
+                </figure>
+                <div className="character-card__head">
+                  <strong>{character.characterName}</strong>
+                  <span>{character.characterTitle}</span>
+                </div>
               </div>
               <p className="character-card__review">{review}</p>
             </article>

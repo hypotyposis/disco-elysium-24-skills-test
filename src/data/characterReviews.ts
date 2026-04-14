@@ -1,9 +1,13 @@
+import harryPortrait from '../assets/disco-game/npc-portraits/harry.png?url'
+import jeanPortrait from '../assets/disco-game/npc-portraits/jean.png?url'
+import kimPortrait from '../assets/disco-game/npc-portraits/kim.png?url'
 import type { AttributeKey } from '../types/quiz.ts'
 
 export interface CharacterReview {
   characterId: 'harry' | 'jean' | 'kim'
   characterName: string
   characterTitle: string
+  portraitSrc: string
   byAttribute: Record<AttributeKey, string>
   bySkill?: Partial<Record<string, string>>
 }
@@ -13,6 +17,7 @@ export const characterReviews: CharacterReview[] = [
     characterId: 'harry',
     characterName: '哈里·杜博阿',
     characterTitle: '41 分局 · 警督（停职审查中）',
+    portraitSrc: harryPortrait,
     byAttribute: {
       Intellect:
         '又一个用脑子解决问题的。我告诉你，孩子，脑子这个东西，用多了会坏。看看我。',
@@ -40,6 +45,7 @@ export const characterReviews: CharacterReview[] = [
     characterId: 'jean',
     characterName: '让·维克玛',
     characterTitle: '41 分局 · 警督',
+    portraitSrc: jeanPortrait,
     byAttribute: {
       Intellect:
         '智力主导。至少你不会在审讯室里跟椅子说话。这在 41 分局算是一种优势。',
@@ -67,6 +73,7 @@ export const characterReviews: CharacterReview[] = [
     characterId: 'kim',
     characterName: '金·忠实',
     characterTitle: '57 分局 · 警督（借调 41 分局）',
+    portraitSrc: kimPortrait,
     byAttribute: {
       Intellect:
         '你的分析能力测试结果很好。我建议你在实际工作中保持这种清醒。41 分局的环境……会考验它。',
