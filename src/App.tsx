@@ -1,12 +1,18 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 
 import { discoReference } from './data/discoReference.ts'
-import { quizQuestions } from './data/quizData.ts'
+import { likertScale, quizQuestions } from './data/quizData.ts'
+import { voicePackMap } from './data/voicePacks.ts'
 import { LandingScreen } from './components/LandingScreen.tsx'
 import { QuizScreen } from './components/QuizScreen.tsx'
 import { ResultScreen } from './components/ResultScreen.tsx'
 import { buildResultNarrative } from './lib/resultNarrative.ts'
 import { scoreQuiz } from './lib/scoring.ts'
+import {
+  computeDeltas,
+  generateCommentary,
+  type VoiceCommentary,
+} from './lib/voiceEngine.ts'
 import type { QuizAnswer } from './types/quiz.ts'
 
 type Phase = 'landing' | 'quiz' | 'result'
@@ -16,6 +22,10 @@ function App() {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [answers, setAnswers] = useState<Record<string, QuizAnswer['value']>>(
     {},
+  )
+  const [commentary, setCommentary] = useState<VoiceCommentary | null>(null)
+  const cumulativeScores = useRef<Record<string, number>>(
+    Object.fromEntries(discoReference.skills.map((s) => [s.english, 0])),
   )
 
   const currentQuestion = quizQuestions[currentIndex]
@@ -43,12 +53,20 @@ function App() {
 
   const handleStart = () => {
     setAnswers({})
+    setCommentary(null)
+    cumulativeScores.current = Object.fromEntries(
+      discoReference.skills.map((s) => [s.english, 0]),
+    )
     setPhase('quiz')
     setCurrentIndex(0)
   }
 
   const handleRestart = () => {
     setAnswers({})
+    setCommentary(null)
+    cumulativeScores.current = Object.fromEntries(
+      discoReference.skills.map((s) => [s.english, 0]),
+    )
     setCurrentIndex(0)
     setPhase('landing')
   }
@@ -69,6 +87,30 @@ function App() {
     }
 
     setAnswers(nextAnswers)
+
+    // Compute voice commentary
+    const choiceLabel =
+      currentQuestion.kind === 'likert'
+        ? (likertScale.find((o) => o.value === value)?.label ?? '')
+        : (currentQuestion.options.find((o) => o.id === value)?.label ?? '')
+
+    const newCommentary = generateCommentary(
+      currentQuestion,
+      value,
+      cumulativeScores.current,
+      voicePackMap,
+      currentIndex + 1,
+      choiceLabel,
+    )
+
+    // Update cumulative scores
+    const deltas = computeDeltas(currentQuestion, value)
+    for (const [skill, delta] of Object.entries(deltas)) {
+      cumulativeScores.current[skill] =
+        (cumulativeScores.current[skill] ?? 0) + delta
+    }
+
+    setCommentary(newCommentary)
 
     if (currentIndex === quizQuestions.length - 1) {
       setPhase('result')
@@ -95,6 +137,7 @@ function App() {
 
         {phase === 'quiz' && (
           <QuizScreen
+            commentary={commentary}
             index={currentIndex}
             onAnswer={handleAnswer}
             onBack={handleBack}

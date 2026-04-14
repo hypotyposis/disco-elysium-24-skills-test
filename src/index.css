@@ -3194,6 +3194,99 @@ ul {
   }
 }
 
+/* ── Skill Commentary (voice engine) ── */
+
+.skill-commentary {
+  margin-top: 1.5rem;
+  padding-top: 1.2rem;
+  border-top: 1px dashed color-mix(in oklab, var(--ink-400) 30%, transparent);
+}
+
+.skill-commentary__label {
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--ink-400);
+  margin-bottom: 0.8rem;
+}
+
+.skill-commentary__bubble {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+  animation: commentary-in 0.4s ease both;
+}
+
+.skill-commentary__bubble--contrarian {
+  opacity: 0.7;
+  margin-left: 1.2rem;
+  animation-delay: 0.3s;
+}
+
+.skill-commentary__portrait {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid var(--ink-400);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.skill-commentary__bubble--contrarian .skill-commentary__portrait {
+  width: 32px;
+  height: 32px;
+  border-color: color-mix(in oklab, var(--ink-400) 50%, transparent);
+}
+
+.skill-commentary__portrait img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.skill-commentary__copy {
+  flex: 1;
+  min-width: 0;
+}
+
+.skill-commentary__name {
+  display: block;
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  margin-bottom: 0.2rem;
+}
+
+.skill-commentary__name--dominant {
+  color: var(--blood-700);
+}
+
+.skill-commentary__name--contrarian {
+  color: var(--ink-500);
+}
+
+.skill-commentary__line {
+  font-size: 0.88rem;
+  line-height: 1.5;
+  font-style: italic;
+  color: var(--ink-700);
+}
+
+.skill-commentary__bubble--contrarian .skill-commentary__line {
+  color: var(--ink-500);
+}
+
+@keyframes commentary-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

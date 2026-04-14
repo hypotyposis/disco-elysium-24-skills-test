@@ -2,11 +2,14 @@ import type { CSSProperties } from 'react'
 
 import { likertScale } from '../data/quizData.ts'
 import { getQuizQuestionSceneSpec } from '../data/discoAssets.ts'
+import type { VoiceCommentary } from '../lib/voiceEngine.ts'
 import type { QuizQuestion } from '../types/quiz.ts'
 import { DossierArtifact } from './DossierArtifact.tsx'
 import { EvidenceChoice } from './EvidenceChoice.tsx'
+import { SkillCommentary } from './SkillCommentary.tsx'
 
 interface QuizScreenProps {
+  commentary: VoiceCommentary | null
   question: QuizQuestion
   index: number
   total: number
@@ -17,6 +20,7 @@ interface QuizScreenProps {
 }
 
 export function QuizScreen({
+  commentary,
   question,
   index,
   total,
@@ -220,6 +224,13 @@ export function QuizScreen({
               />
             ))}
           </div>
+
+          {commentary && (commentary.dominant || commentary.contrarian) && (
+            <SkillCommentary
+              key={`commentary-${index}`}
+              commentary={commentary}
+            />
+          )}
         </article>
       </div>
     </section>
