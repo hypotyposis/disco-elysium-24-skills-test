@@ -9,10 +9,7 @@ import {
 } from '../data/discoAssets.ts'
 import { skillFlavorNotes } from '../data/resultCopy.ts'
 import { voicePackMap } from '../data/voicePacks.ts'
-import type {
-  ResultNarrative,
-  ResultShareVariant,
-} from '../lib/resultNarrative.ts'
+import type { ResultNarrative } from '../lib/resultNarrative.ts'
 import { buildMonologue } from '../lib/voiceEngine.ts'
 import type { DiscoReference, QuizResult } from '../types/quiz.ts'
 import { AttributeDiamond } from './AttributeDiamond.tsx'
@@ -33,13 +30,6 @@ export function ResultScreen({
   narrative,
   onRestart,
 }: ResultScreenProps) {
-  const [copyState, setCopyState] = useState<{
-    status: 'idle' | 'copied' | 'error'
-    variantId: ResultShareVariant['id'] | null
-  }>({
-    status: 'idle',
-    variantId: null,
-  })
   const [exportState, setExportState] = useState<
     'idle' | 'saving' | 'saved' | 'error'
   >('idle')
@@ -83,44 +73,6 @@ export function ResultScreen({
     }
 
     return Math.max(1, Math.round((score / maxSkillScore) * 5))
-  }
-
-  const handleCopy = async (variant: ResultShareVariant) => {
-    if (!navigator.clipboard) {
-      setCopyState({ status: 'error', variantId: variant.id })
-      window.setTimeout(
-        () => setCopyState({ status: 'idle', variantId: null }),
-        1800,
-      )
-      return
-    }
-
-    try {
-      await navigator.clipboard.writeText(variant.text)
-      setCopyState({ status: 'copied', variantId: variant.id })
-    } catch {
-      setCopyState({ status: 'error', variantId: variant.id })
-    }
-
-    window.setTimeout(
-      () => setCopyState({ status: 'idle', variantId: null }),
-      1800,
-    )
-  }
-
-  const getCopyButtonLabel = (variant: ResultShareVariant) => {
-    const variantStatus =
-      copyState.variantId === variant.id ? copyState.status : 'idle'
-
-    if (variantStatus === 'copied') {
-      return `${variant.label}已复制`
-    }
-
-    if (variantStatus === 'error') {
-      return '复制失败，请重试'
-    }
-
-    return `复制${variant.label}`
   }
 
   const handleExportPoster = async () => {
@@ -275,48 +227,6 @@ export function ResultScreen({
               <strong>{narrative.tertiarySkill.chinese}</strong>
             </div>
           </div>
-
-          <section className="share-kit" aria-labelledby="share-kit-title">
-            <div className="share-kit__header">
-              <p className="file-label">分享文案 / caption kit</p>
-              <div className="share-kit__copy">
-                <h2 id="share-kit-title">给海报配一句可以真的发出去的话</h2>
-                <p>海报负责气氛，文案把主导声部、前三名和那句判词一起补齐。</p>
-              </div>
-            </div>
-
-            <div className="share-kit__grid">
-              {narrative.shareVariants.map((variant, index) => (
-                <article
-                  className={`share-slip share-slip--${index + 1}`}
-                  key={variant.id}
-                >
-                  <div className="share-slip__head">
-                    <div className="share-slip__title">
-                      <span className="file-label">caption slip</span>
-                      <h3>{variant.label}</h3>
-                    </div>
-                  </div>
-                  <p className="share-slip__description">
-                    {variant.description}
-                  </p>
-                  <div
-                    aria-label={`${variant.label}文案预览`}
-                    className="share-slip__preview"
-                  >
-                    {variant.text}
-                  </div>
-                  <button
-                    className="document-button document-button--ghost"
-                    type="button"
-                    onClick={() => void handleCopy(variant)}
-                  >
-                    {getCopyButtonLabel(variant)}
-                  </button>
-                </article>
-              ))}
-            </div>
-          </section>
 
           <div className="verdict-actions">
             <button
