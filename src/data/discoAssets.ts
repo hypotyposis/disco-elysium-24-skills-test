@@ -50,10 +50,19 @@ export interface ResultPosterArtSpec {
   docket: string
 }
 
+const imageModules: Record<string, string> =
+  typeof import.meta.glob === 'function'
+    ? import.meta.glob<string>('../assets/disco-game/**/*.png', {
+        eager: true,
+        import: 'default',
+        query: '?url',
+      })
+    : {}
+
 function createAsset(relativePath: string, label: string): DiscoArtAsset {
   return {
     label,
-    src: new URL(relativePath, import.meta.url).href,
+    src: imageModules[relativePath] ?? relativePath,
   }
 }
 

@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict'
 import { existsSync } from 'node:fs'
 import { readFileSync } from 'node:fs'
+import { dirname, resolve } from 'node:path'
 import test from 'node:test'
 import { fileURLToPath } from 'node:url'
 
@@ -11,6 +12,13 @@ import {
   getSkillPortraitAsset,
   normalizeSkillPortraitSlug,
 } from './discoAssets.ts'
+
+const thisDir = dirname(fileURLToPath(import.meta.url))
+
+function resolveAssetPath(src: string): string {
+  if (src.startsWith('file://')) return fileURLToPath(src)
+  return resolve(thisDir, src)
+}
 
 const discoReference = JSON.parse(
   readFileSync(new URL('./discoSkillReference.json', import.meta.url), 'utf8'),
@@ -36,7 +44,7 @@ test('getSkillPortraitAsset resolves every reference skill to an existing file',
 
     assert.ok(portrait, `Missing portrait asset for ${skill.english}`)
     assert.equal(portrait.skill, skill.english)
-    assert.ok(existsSync(fileURLToPath(portrait.src)), portrait.src)
+    assert.ok(existsSync(resolveAssetPath(portrait.src)), portrait.src)
   }
 })
 
@@ -72,6 +80,6 @@ test('landing and dossier artifact assets resolve to exported files', () => {
   ]
 
   for (const asset of assets) {
-    assert.ok(existsSync(fileURLToPath(asset.src)), asset.src)
+    assert.ok(existsSync(resolveAssetPath(asset.src)), asset.src)
   }
 })
