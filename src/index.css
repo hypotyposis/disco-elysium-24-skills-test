@@ -1087,7 +1087,9 @@ ul {
 }
 
 .interrogation-sheet h1 {
-  max-width: 13ch;
+  max-width: 22ch;
+  font-size: clamp(1.6rem, 3.6vw, 2.6rem);
+  line-height: 1.25;
   text-wrap: balance;
 }
 
@@ -2015,7 +2017,7 @@ ul {
   object-fit: cover;
   object-position: center 26%;
   opacity: 0.66;
-  filter: sepia(0.16) saturate(0.82) contrast(1.08);
+  filter: sepia(0.24) saturate(0.72) contrast(1.18) brightness(0.7);
 }
 
 .scene-dossier__caption {
@@ -2303,7 +2305,9 @@ ul {
 }
 
 .interrogation-sheet h1 {
-  max-width: 15ch;
+  max-width: 22ch;
+  font-size: clamp(1.6rem, 3.6vw, 2.6rem);
+  line-height: 1.25;
   text-wrap: balance;
 }
 
