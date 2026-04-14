@@ -24,6 +24,7 @@ function App() {
     {},
   )
   const [commentary, setCommentary] = useState<VoiceCommentary | null>(null)
+  const hesitationCount = useRef(0)
   const cumulativeScores = useRef<Record<string, number>>(
     Object.fromEntries(discoReference.skills.map((s) => [s.english, 0])),
   )
@@ -54,6 +55,7 @@ function App() {
   const handleStart = () => {
     setAnswers({})
     setCommentary(null)
+    hesitationCount.current = 0
     cumulativeScores.current = Object.fromEntries(
       discoReference.skills.map((s) => [s.english, 0]),
     )
@@ -64,6 +66,7 @@ function App() {
   const handleRestart = () => {
     setAnswers({})
     setCommentary(null)
+    hesitationCount.current = 0
     cumulativeScores.current = Object.fromEntries(
       discoReference.skills.map((s) => [s.english, 0]),
     )
@@ -102,6 +105,11 @@ function App() {
       currentIndex + 1,
       choiceLabel,
     )
+
+    // Track hesitation
+    if (newCommentary.isHesitation) {
+      hesitationCount.current += 1
+    }
 
     // Update cumulative scores
     const deltas = computeDeltas(currentQuestion, value)
@@ -150,6 +158,7 @@ function App() {
 
         {phase === 'result' && result && narrative && (
           <ResultScreen
+            hesitationCount={hesitationCount.current}
             narrative={narrative}
             onRestart={handleRestart}
             reference={discoReference}

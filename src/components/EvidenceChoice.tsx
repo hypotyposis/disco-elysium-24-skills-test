@@ -1,3 +1,5 @@
+import { evidenceCopy } from '../data/uiCopy.ts'
+
 interface EvidenceChoiceProps {
   docket: string
   label: string
@@ -28,7 +30,8 @@ export function EvidenceChoice({
     <button
       className={`evidence-slip evidence-slip--${variant}${selected ? ' is-selected' : ''}`}
       type="button"
-      aria-pressed={selected}
+      role="radio"
+      aria-checked={selected}
       onClick={onSelect}
     >
       <div className="evidence-slip__head">
@@ -51,7 +54,7 @@ export function EvidenceChoice({
       <strong className="evidence-slip__label">{label}</strong>
       <span className="evidence-slip__note">{note}</span>
       <span className="evidence-slip__marker">
-        {selected ? '已归档' : `证片 ${String(order).padStart(2, '0')}`}
+        {selected ? evidenceCopy.selected : evidenceCopy.docket(order)}
       </span>
     </button>
   )

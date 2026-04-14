@@ -1,10 +1,11 @@
 import harryPortrait from '../assets/disco-game/npc-portraits/harry.png?url'
 import jeanPortrait from '../assets/disco-game/npc-portraits/jean.png?url'
+import juditPortrait from '../assets/disco-game/npc-portraits/judit.png?url'
 import kimPortrait from '../assets/disco-game/npc-portraits/kim.png?url'
 import type { AttributeKey } from '../types/quiz.ts'
 
 export interface CharacterReview {
-  characterId: 'harry' | 'jean' | 'kim'
+  characterId: 'harry' | 'jean' | 'kim' | 'judit'
   characterName: string
   characterTitle: string
   portraitSrc: string
@@ -71,7 +72,7 @@ export const characterReviews: CharacterReview[] = [
   },
   {
     characterId: 'kim',
-    characterName: '金·忠实',
+    characterName: '金·曷城',
     characterTitle: '57 分局 · 警督（借调 41 分局）',
     portraitSrc: kimPortrait,
     byAttribute: {
@@ -97,6 +98,36 @@ export const characterReviews: CharacterReview[] = [
         '你对环境有一种……不寻常的敏感度。我以前的一个搭档也有这个特质。他是个好警察。',
       'Half Light':
         '你的威胁评估反应非常敏锐。确保它为你工作，而不是反过来。这很重要。',
+    },
+  },
+  {
+    characterId: 'judit',
+    characterName: '朱迪·明茨',
+    characterTitle: '41 分局 · 巡警',
+    portraitSrc: juditPortrait,
+    byAttribute: {
+      Intellect:
+        '你想得比大多数新人多。这是好事。但别想太久，现场不会等你想完。',
+      Psyche:
+        '你对人很敏感。在 41 分局，这意味着你会比别人更早感到累。但也会比别人更早发现线索。',
+      Fysique:
+        '体能不错。巡逻的时候你能跟上节奏。说实话，这比你想象的重要。',
+      Motorics:
+        '你的反应很快。出外勤的时候，这种人我愿意跟他一组。',
+    },
+    bySkill: {
+      Empathy:
+        '你很容易读懂别人的情绪。我也是。有时候这让工作更难，因为你没办法假装不在乎。',
+      Volition:
+        '自控力很强。你会是这里少数几个能按时交报告的人。别笑，这是真话。',
+      'Inland Empire':
+        '你的直觉很强。有时候直觉是对的。但如果你开始跟物件说话，请告诉我。我见过这种情况。',
+      Endurance:
+        '你能扛。这里的轮班表会考验你的。但你应该没问题。',
+      'Esprit de Corps':
+        '你重视团队。太好了。这个分局需要更多这样的人。真的需要。',
+      Electrochemistry:
+        '我注意到了你在这个指标上的得分。我不评判。但如果你需要帮忙，储物柜 C-4 里有咖啡。真的只是咖啡。',
     },
   },
 ]

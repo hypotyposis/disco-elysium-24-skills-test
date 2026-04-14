@@ -13,13 +13,14 @@ export interface VoiceLine {
 export interface VoiceCommentary {
   approve: VoiceLine | null
   dissent: VoiceLine | null
+  isHesitation?: boolean
 }
 
 type TriggerType = 'approve' | 'mock' | 'warn' | 'tempt'
 
 export interface VoicePack {
   skillId: string
-  voice: Partial<Record<TriggerType | 'epilogue', string[]>>
+  voice: Partial<Record<TriggerType | 'epilogue' | 'rivalInterjection', string[]>>
 }
 
 interface VoiceContext {
@@ -30,6 +31,39 @@ interface VoiceContext {
   score: number
   questionNum: number
 }
+
+/**
+ * Hesitation commentary — triggered when the player picks "说不准" (value 0).
+ * Two skills always have opinions about indecision:
+ * - Volition (平心定气): gentle coaching, sometimes concerned
+ * - Authority (争强好胜): impatient, demands a decision
+ */
+const hesitationLines: Array<{
+  skillId: string
+  role: VoiceLine['role']
+  lines: string[]
+}> = [
+  {
+    skillId: 'Volition',
+    role: 'approve',
+    lines: [
+      '没关系。不确定也是一种诚实。',
+      '你不用急。但你也不能一直站在这里。',
+      '有些问题没有答案。承认这一点需要勇气。',
+      '停下来想一想是对的。但别停太久。',
+    ],
+  },
+  {
+    skillId: 'Authority',
+    role: 'dissent',
+    lines: [
+      '做一个决定。任何决定。犹豫比错误更糟。',
+      '又是"说不准"？你在回避，不是在思考。',
+      '你以为不选就没有后果？不选本身就是一种选择。最弱的那种。',
+      '警探不说"说不准"。警探做判断。',
+    ],
+  },
+]
 
 const TEMPLATE_VAR = /\{(\w+)\}/g
 
@@ -184,7 +218,27 @@ export function generateCommentary(
   const approveId = findTopSkill(deltas, cumulativeScores)
 
   if (!approveId) {
-    return { approve: null, dissent: null }
+    // Hesitation path: no skill got a positive delta (e.g. "说不准")
+    const volitionEntry = hesitationLines.find((h) => h.skillId === 'Volition')!
+    const authorityEntry = hesitationLines.find((h) => h.skillId === 'Authority')!
+    const volitionSkill = skillMap[volitionEntry.skillId]
+    const authoritySkill = skillMap[authorityEntry.skillId]
+
+    return {
+      approve: {
+        skillEnglish: volitionEntry.skillId,
+        skillChinese: volitionSkill?.chinese ?? volitionEntry.skillId,
+        text: pickRandom(volitionEntry.lines) ?? '',
+        role: 'approve',
+      },
+      dissent: {
+        skillEnglish: authorityEntry.skillId,
+        skillChinese: authoritySkill?.chinese ?? authorityEntry.skillId,
+        text: pickRandom(authorityEntry.lines) ?? '',
+        role: 'dissent',
+      },
+      isHesitation: true,
+    }
   }
 
   // Find the dissenting skill: top skill from the opposite choice
@@ -272,7 +326,8 @@ export function buildMonologue(
 
   let rivalInterjection: string | null = null
   if (rivalPack) {
-    const mockLine = pickRandom(rivalPack.voice.mock ?? [])
+    const mockLine = pickRandom(rivalPack.voice.rivalInterjection ?? [])
+      ?? pickRandom(rivalPack.voice.mock ?? [])
     if (mockLine) {
       rivalInterjection = fillTemplate(mockLine, {
         choice: '',

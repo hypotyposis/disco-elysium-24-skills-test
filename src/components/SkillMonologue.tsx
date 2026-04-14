@@ -1,4 +1,5 @@
 import { getSkillPortraitAsset } from '../data/discoAssets.ts'
+import { monologueCopy } from '../data/uiCopy.ts'
 import type { SkillMonologueData } from '../lib/voiceEngine.ts'
 
 interface SkillMonologueProps {
@@ -13,7 +14,7 @@ export function SkillMonologue({ monologue }: SkillMonologueProps) {
 
   return (
     <div className="skill-monologue">
-      <p className="skill-monologue__label">主导技能独白</p>
+      <p className="skill-monologue__label">{monologueCopy.label}</p>
 
       <div className="skill-monologue__main">
         {portrait && (

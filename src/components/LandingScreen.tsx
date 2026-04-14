@@ -2,6 +2,7 @@ import {
   dossierArtifactAssets,
   landingBackdropAssets,
 } from '../data/discoAssets.ts'
+import { landingCopy } from '../data/uiCopy.ts'
 import type { DiscoReference } from '../types/quiz.ts'
 import { DossierArtifact } from './DossierArtifact.tsx'
 
@@ -32,24 +33,21 @@ export function LandingScreen({
               asset={dossierArtifactAssets.badge}
               className="dossier-artifact--stamp"
             />
-            <span className="file-label">RCM 第 41 特别分局 · 入职心理评估</span>
+            <span className="file-label">{landingCopy.badge}</span>
           </div>
-          <span>卷别 04 / 证物 24</span>
+          <span>{landingCopy.subtitle}</span>
         </div>
 
         <div className="landing-lockup">
           <div className="landing-lockup__main">
-            <p className="landing-lockup__prefix">
-              瑞瓦肖公民自卫队 · 人事档案处
-            </p>
+            <p className="landing-lockup__prefix">{landingCopy.prefix}</p>
             <h1 id="landing-title">
-              新警员
+              {landingCopy.titleLine1}
               <br />
-              心理分析问卷
+              {landingCopy.titleLine2}
             </h1>
             <p className="landing-lockup__summary">
-              本问卷包含 {questionCount}{' '}
-              道评估，将分析你的思维模式、情绪反应、身体素质与行动倾向。完成后将生成你的思维档案。
+              {landingCopy.summary(questionCount)}
             </p>
           </div>
 
@@ -62,13 +60,13 @@ export function LandingScreen({
                 src={landingBackdropAssets.lobbyBackdrop.src}
               />
               <figcaption className="landing-backdrop-card__label">
-                <span>夜班现场 / dossier wash</span>
+                <span>{landingCopy.backdropLabel}</span>
                 <strong>Whirling-in-Rags lobby</strong>
               </figcaption>
             </figure>
 
             <div className="landing-emblem">
-              <span>卷宗</span>
+              <span>{landingCopy.emblemLabel}</span>
               <strong>24</strong>
               <span>voice trace</span>
             </div>
@@ -77,34 +75,38 @@ export function LandingScreen({
 
         <div className="landing-annotations" aria-hidden="true">
           <div className="annotation-slip">
-            <p className="annotation-slip__title">判读方式</p>
-            <p>逐题累计技能与属性权重，不做模板贴合，不给人格贴标签。</p>
+            <p className="annotation-slip__title">
+              {landingCopy.annotation1Title}
+            </p>
+            <p>{landingCopy.annotation1Body}</p>
           </div>
           <div className="annotation-slip annotation-slip--offset">
-            <p className="annotation-slip__title">现场气味</p>
-            <p>旧纸、灰烬、酒渍、红线。没有原图，只有你脑内那面坏掉的案板。</p>
+            <p className="annotation-slip__title">
+              {landingCopy.annotation2Title}
+            </p>
+            <p>{landingCopy.annotation2Body}</p>
           </div>
         </div>
 
         <div className="landing-footer">
           <button className="document-button" type="button" onClick={onStart}>
-            开始评估
+            {landingCopy.startButton}
           </button>
 
           <div className="landing-ledger">
-            <p className="file-label">目录摘要</p>
+            <p className="file-label">{landingCopy.ledgerLabel}</p>
             <ul>
               <li>
                 <strong>{questionCount}</strong>
-                <span>道评估</span>
+                <span>{landingCopy.unitQuestions}</span>
               </li>
               <li>
                 <strong>{reference.skills.length}</strong>
-                <span>项指标</span>
+                <span>{landingCopy.unitSkills}</span>
               </li>
               <li>
                 <strong>{reference.attributes.length}</strong>
-                <span>维属性</span>
+                <span>{landingCopy.unitAttributes}</span>
               </li>
             </ul>
           </div>
@@ -115,15 +117,15 @@ export function LandingScreen({
         <div className="archive-heading">
           <div className="archive-heading__head">
             <div className="archive-heading__body">
-              <p className="file-label">目录页 / voices index</p>
-              <h2 id="archive-title">评估维度：四大属性，二十四项心理指标</h2>
+              <p className="file-label">{landingCopy.archiveLabel}</p>
+              <h2 id="archive-title">{landingCopy.archiveTitle}</h2>
             </div>
             <DossierArtifact
               asset={dossierArtifactAssets.map}
               className="dossier-artifact--map"
             />
           </div>
-          <p>每一项都会在执勤中影响你的判断与行为。</p>
+          <p>{landingCopy.archiveSubtitle}</p>
         </div>
 
         <div className="archive-board">

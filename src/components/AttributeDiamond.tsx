@@ -1,3 +1,4 @@
+import { diamondCopy } from '../data/uiCopy.ts'
 import type { AttributeReference, AttributeKey } from '../types/quiz.ts'
 
 interface AttributeDiamondProps {
@@ -51,7 +52,7 @@ export function AttributeDiamond({
         className="attribute-map__svg"
         viewBox="0 0 296 296"
       >
-        <title id="attribute-map-title">四大属性现场图</title>
+        <title id="attribute-map-title">{diamondCopy.title}</title>
 
         {levels.map((level) => (
           <polygon
@@ -106,7 +107,7 @@ export function AttributeDiamond({
       </svg>
 
       <figcaption className="attribute-map__caption">
-        四条轴不是汇报图表。它们只是说明，你在混乱里最先往哪边供电。
+        {diamondCopy.description}
       </figcaption>
     </figure>
   )

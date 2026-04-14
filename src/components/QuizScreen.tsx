@@ -1,7 +1,8 @@
-import type { CSSProperties } from 'react'
+import { useEffect, type CSSProperties } from 'react'
 
 import { likertScale } from '../data/quizData.ts'
 import { getQuizQuestionSceneSpec } from '../data/discoAssets.ts'
+import { quizCopy } from '../data/uiCopy.ts'
 import type { VoiceCommentary } from '../lib/voiceEngine.ts'
 import type { QuizQuestion } from '../types/quiz.ts'
 import { DossierArtifact } from './DossierArtifact.tsx'
@@ -29,8 +30,12 @@ export function QuizScreen({
   onBack,
   onRestart,
 }: QuizScreenProps) {
+  useEffect(() => {
+    window.scrollTo({ top: 0 })
+  }, [index])
+
   const progress = ((index + 1) / total) * 100
-  const questionType = question.kind === 'likert' ? '陈述题' : '情境题'
+  const questionType = question.kind === 'likert' ? quizCopy.questionTypeLikert : quizCopy.questionTypeScenario
   const questionScene = getQuizQuestionSceneSpec(question)
   const selectedLabel =
     question.kind === 'likert'
@@ -41,7 +46,7 @@ export function QuizScreen({
       ? likertScale.map((option, optionIndex) => ({
           key: String(option.value),
           value: option.value,
-          docket: `强度档 ${String(optionIndex + 1).padStart(2, '0')}`,
+          docket: quizCopy.likertDocket(optionIndex),
           label: option.label,
           note: option.tone,
           portrait: undefined,
@@ -53,7 +58,7 @@ export function QuizScreen({
           return {
             key: option.id,
             value: option.id,
-            docket: `证词片段 ${String(optionIndex + 1).padStart(2, '0')}`,
+            docket: quizCopy.scenarioDocket(optionIndex),
             label: option.label,
             note: option.insight,
             portrait:
@@ -81,9 +86,9 @@ export function QuizScreen({
       <header className="interrogation-header">
         <div className="interrogation-header__main">
           <p className="file-label">
-            心理评估 / 第 {String(index + 1).padStart(2, '0')} 项
+            {quizCopy.headerLabel(index)}
           </p>
-          <h2>请选择最接近你真实反应的选项。</h2>
+          <h2>{quizCopy.headerTitle}</h2>
         </div>
         <div className="interrogation-actions">
           <button
@@ -91,14 +96,14 @@ export function QuizScreen({
             type="button"
             onClick={onBack}
           >
-            上一题
+            {quizCopy.backButton}
           </button>
           <button
             className="document-button document-button--ghost"
             type="button"
             onClick={onRestart}
           >
-            重新开始
+            {quizCopy.restartButton}
           </button>
         </div>
       </header>
@@ -106,11 +111,17 @@ export function QuizScreen({
       <div className="interrogation-ruler">
         <div className="interrogation-ruler__meta">
           <span>
-            第 {index + 1} / {total} 题
+            {quizCopy.progress(index, total)}
           </span>
-          <span>{selectedLabel ? `已作答：${selectedLabel}` : '尚未作答'}</span>
+          <span>{selectedLabel ? quizCopy.answered(selectedLabel) : quizCopy.notAnswered}</span>
         </div>
-        <div aria-hidden="true" className="interrogation-ruler__track">
+        <div
+          className="interrogation-ruler__track"
+          role="progressbar"
+          aria-valuenow={Math.round(progress)}
+          aria-valuemin={0}
+          aria-valuemax={100}
+        >
           <div
             className="interrogation-ruler__fill"
             style={{ width: `${progress}%` }}
@@ -131,7 +142,7 @@ export function QuizScreen({
           <div className="scene-dossier__brief">
             <div className="scene-dossier__brief-head">
               <div>
-                <p className="file-label">评估背景</p>
+                <p className="file-label">{quizCopy.sceneLabel}</p>
                 <h3>{questionScene.title}</h3>
               </div>
               <DossierArtifact
@@ -144,15 +155,15 @@ export function QuizScreen({
             <p className="scene-dossier__note">{questionScene.note}</p>
 
             <div className="scene-dossier__status">
-              <span>已作答</span>
-              <strong>{selectedLabel ?? '待作答'}</strong>
+              <span>{quizCopy.statusLabel}</span>
+              <strong>{selectedLabel ?? quizCopy.statusPending}</strong>
             </div>
           </div>
 
           <div className="scene-dossier__voices">
             <div className="section-record">
-              <span className="file-label">相关指标</span>
-              <span>{questionScene.voices.length} 项心理指标</span>
+              <span className="file-label">{quizCopy.voicesLabel}</span>
+              <span>{quizCopy.voicesCount(questionScene.voices.length)}</span>
             </div>
 
             <ol className={`voice-chorus voice-chorus--${question.kind}`}>
@@ -187,13 +198,13 @@ export function QuizScreen({
         >
           <div className="question-stamp">
             <span>{questionType}</span>
-            <span>归档序号 {String(index + 1).padStart(2, '0')}</span>
+            <span>{quizCopy.stampLabel(index)}</span>
           </div>
 
-          <div className="question-dossier-tags" aria-label="问题现场标签">
+          <div className="question-dossier-tags" aria-label={quizCopy.tagsAriaLabel}>
             <span>{questionScene.backdrop.label}</span>
             <span>
-              {questionScene.voices[0]?.skill.chinese ?? '卷宗整理中'}
+              {questionScene.voices[0]?.skill.chinese ?? quizCopy.tagsFallback}
             </span>
           </div>
 
@@ -201,13 +212,14 @@ export function QuizScreen({
           <h1 id="question-title">{question.prompt}</h1>
           <p className="interrogation-sheet__cue">
             {question.kind === 'likert'
-              ? '从否认到认领，选一张最像你的口供。'
-              : '三份处理方式里，哪一份最像你会先伸手去拿的那张。'}
+              ? quizCopy.cueLikert
+              : quizCopy.cueScenario}
           </p>
 
           <div
             className={`evidence-field evidence-field--${question.kind}`}
-            role="list"
+            role="radiogroup"
+            aria-labelledby="question-title"
           >
             {evidenceOptions.map((option, optionIndex) => (
               <EvidenceChoice

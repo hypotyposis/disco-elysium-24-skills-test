@@ -8,6 +8,7 @@ import {
   normalizeSkillPortraitSlug,
 } from '../data/discoAssets.ts'
 import { skillFlavorNotes } from '../data/resultCopy.ts'
+import { resultCopy } from '../data/uiCopy.ts'
 import { voicePackMap } from '../data/voicePacks.ts'
 import type { ResultNarrative } from '../lib/resultNarrative.ts'
 import { buildMonologue } from '../lib/voiceEngine.ts'
@@ -18,6 +19,7 @@ import { DossierArtifact } from './DossierArtifact.tsx'
 import { SkillMonologue } from './SkillMonologue.tsx'
 
 interface ResultScreenProps {
+  hesitationCount: number
   reference: DiscoReference
   result: QuizResult
   narrative: ResultNarrative
@@ -25,6 +27,7 @@ interface ResultScreenProps {
 }
 
 export function ResultScreen({
+  hesitationCount,
   reference,
   result,
   narrative,
@@ -108,8 +111,8 @@ export function ResultScreen({
     <section className="result-screen">
       <header className="verdict-sheet dossier-sheet">
         <div className="sheet-meta sheet-meta--result">
-          <span className="file-label">心理评估报告 / personnel psych profile</span>
-          <span>评估完成</span>
+          <span className="file-label">{resultCopy.reportLabel}</span>
+          <span>{resultCopy.reportComplete}</span>
         </div>
 
         <div className="verdict-poster-frame">
@@ -128,7 +131,7 @@ export function ResultScreen({
 
             <div className="verdict-poster__body">
               <div className="verdict-poster__copy">
-                <p className="verdict-poster__prefix">主导心理指标 / dominant trait</p>
+                <p className="verdict-poster__prefix">{resultCopy.posterPrefix}</p>
                 <h1>{result.primarySkill.chinese}</h1>
                 <p className="verdict-poster__english">
                   {result.primarySkill.english}
@@ -147,7 +150,7 @@ export function ResultScreen({
                     src={primaryPortrait.src}
                   />
                   <figcaption className="verdict-poster__portrait-label">
-                    <span>主导指标 / portrait cut</span>
+                    <span>{resultCopy.posterPortraitLabel}</span>
                     <strong>{result.primarySkill.chinese}</strong>
                   </figcaption>
                 </figure>
@@ -156,28 +159,28 @@ export function ResultScreen({
 
             <div className="verdict-poster__facts">
               <div>
-                <span>主导属性</span>
+                <span>{resultCopy.dominantAttribute}</span>
                 <strong>{narrative.dominantAttribute.chinese}</strong>
               </div>
               <div>
-                <span>第二指标</span>
+                <span>{resultCopy.secondTrait}</span>
                 <strong>{narrative.secondarySkill.chinese}</strong>
               </div>
               <div>
-                <span>思维模式</span>
+                <span>{resultCopy.thoughtPattern}</span>
                 <strong>{narrative.thoughtTitle}</strong>
               </div>
             </div>
 
             <div className="verdict-poster__footer">
               <div className="verdict-poster__quote">
-                <span>评估摘要</span>
+                <span>{resultCopy.summaryLabel}</span>
                 <p>{narrative.summary}</p>
               </div>
 
               <ol
                 className="verdict-poster__lineup"
-                aria-label="前三指标海报线列"
+                aria-label={resultCopy.lineupAriaLabel}
               >
                 {voicePortraitLineup.map((item) => (
                   <li key={item.skill.english}>
@@ -201,11 +204,6 @@ export function ResultScreen({
         </div>
 
         <div className="verdict-brief">
-          <div className="verdict-summary">
-            <p className="verdict-summary__lead">{narrative.punchline}</p>
-            <p>{narrative.summary}</p>
-          </div>
-
           <SkillMonologue monologue={monologue} />
 
           <CharacterReviewSection
@@ -215,15 +213,15 @@ export function ResultScreen({
 
           <div className="verdict-fragments">
             <div className="verdict-fragment">
-              <span>主导属性</span>
+              <span>{resultCopy.dominantAttribute}</span>
               <strong>{narrative.dominantAttribute.chinese}</strong>
             </div>
             <div className="verdict-fragment">
-              <span>第二指标</span>
+              <span>{resultCopy.secondTrait}</span>
               <strong>{narrative.secondarySkill.chinese}</strong>
             </div>
             <div className="verdict-fragment">
-              <span>第三指标</span>
+              <span>{resultCopy.thirdTrait}</span>
               <strong>{narrative.tertiarySkill.chinese}</strong>
             </div>
           </div>
@@ -235,19 +233,19 @@ export function ResultScreen({
               onClick={() => void handleExportPoster()}
             >
               {exportState === 'saving'
-                ? '正在生成 PNG'
+                ? resultCopy.exportSaving
                 : exportState === 'saved'
-                  ? '海报已保存'
+                  ? resultCopy.exportSaved
                   : exportState === 'error'
-                    ? '导出失败，请重试'
-                    : '保存海报 PNG'}
+                    ? resultCopy.exportError
+                    : resultCopy.exportButton}
             </button>
             <button
               className="document-button document-button--ghost"
               type="button"
               onClick={onRestart}
             >
-              重新测试
+              {resultCopy.restartButton}
             </button>
           </div>
         </div>
@@ -257,8 +255,8 @@ export function ResultScreen({
         <section className="case-notes">
           <div className="section-record section-record--artifact">
             <div className="section-record__stack">
-              <p className="file-label">指标记录</p>
-              <h2>最显著的三项指标</h2>
+              <p className="file-label">{resultCopy.traitRecordLabel}</p>
+              <h2>{resultCopy.traitRecordTitle}</h2>
             </div>
             <DossierArtifact
               asset={dossierArtifactAssets.ledger}
@@ -276,8 +274,8 @@ export function ResultScreen({
                   key={skill.english}
                 >
                   <div className="voice-docket__head">
-                    <span>证词 {String(index + 1).padStart(2, '0')}</span>
-                    <span>强度 {skill.score}</span>
+                    <span>{resultCopy.traitDocket(index)}</span>
+                    <span>{resultCopy.traitScore(skill.score)}</span>
                   </div>
                   <div className="voice-docket__title">
                     <strong>{skill.chinese}</strong>
@@ -295,16 +293,30 @@ export function ResultScreen({
             asset={dossierArtifactAssets.pen}
             className="dossier-artifact--pen thought-note__artifact"
           />
-          <p className="file-label">思维模式倾向</p>
+          <p className="file-label">{resultCopy.thoughtLabel}</p>
           <h2>{narrative.thoughtTitle}</h2>
           <p>{narrative.thoughtBody}</p>
         </aside>
+
+        {hesitationCount > 0 && (
+          <aside className="thought-note thought-note--hesitation">
+            <p className="file-label">{resultCopy.hesitationLabel}</p>
+            <h2>{resultCopy.hesitationTitle(hesitationCount)}</h2>
+            <p>
+              {hesitationCount >= 6
+                ? resultCopy.hesitationHigh
+                : hesitationCount >= 3
+                  ? resultCopy.hesitationMedium
+                  : resultCopy.hesitationLow}
+            </p>
+          </aside>
+        )}
       </div>
 
       <section className="attribute-sheet">
         <div className="section-record">
-          <p className="file-label">属性现场图</p>
-          <h2>四大属性在给哪股冲动供电</h2>
+          <p className="file-label">{resultCopy.attributeMapLabel}</p>
+          <h2>{resultCopy.attributeMapTitle}</h2>
         </div>
 
         <div className="attribute-sheet__body">
@@ -334,8 +346,8 @@ export function ResultScreen({
 
       <section className="skills-sheet">
         <div className="section-record">
-          <p className="file-label">总档案</p>
-          <h2>二十四项指标，按维度归档</h2>
+          <p className="file-label">{resultCopy.archiveLabel}</p>
+          <h2>{resultCopy.archiveTitle}</h2>
         </div>
 
         <div className="skills-sheet__board">

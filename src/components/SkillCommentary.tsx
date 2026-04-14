@@ -1,4 +1,5 @@
 import { getSkillPortraitAsset } from '../data/discoAssets.ts'
+import { commentaryCopy } from '../data/uiCopy.ts'
 import type { VoiceCommentary } from '../lib/voiceEngine.ts'
 
 interface SkillCommentaryProps {
@@ -11,8 +12,8 @@ export function SkillCommentary({ commentary }: SkillCommentaryProps) {
   const approvePortrait = getSkillPortraitAsset(commentary.approve.skillEnglish)
 
   return (
-    <div className="skill-commentary" aria-label="内心声音">
-      <p className="skill-commentary__label">内心声音</p>
+    <div className="skill-commentary" aria-label={commentaryCopy.ariaLabel}>
+      <p className="skill-commentary__label">{commentaryCopy.label}</p>
 
       <div className="skill-commentary__bubble">
         {approvePortrait && (

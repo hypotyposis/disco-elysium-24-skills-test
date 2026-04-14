@@ -2,6 +2,7 @@ import {
   characterReviews,
   getCharacterReview,
 } from '../data/characterReviews.ts'
+import { characterReviewCopy } from '../data/uiCopy.ts'
 import type { AttributeKey } from '../types/quiz.ts'
 
 interface CharacterReviewSectionProps {
@@ -16,8 +17,8 @@ export function CharacterReviewSection({
   return (
     <section className="character-reviews" aria-labelledby="character-reviews-title">
       <div className="section-record">
-        <p className="file-label">同事评价 / peer assessment</p>
-        <h2 id="character-reviews-title">他们看了你的档案</h2>
+        <p className="file-label">{characterReviewCopy.sectionLabel}</p>
+        <h2 id="character-reviews-title">{characterReviewCopy.sectionTitle}</h2>
       </div>
 
       <div className="character-reviews__grid">

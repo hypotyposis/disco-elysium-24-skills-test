@@ -1,5 +1,6 @@
 import { skillFlavorNotes } from './resultCopy.ts'
 import { skillMap } from './discoReference.ts'
+import { sceneCopy } from './uiCopy.ts'
 import type {
   AttributeKey,
   QuizQuestion,
@@ -462,13 +463,13 @@ export function getQuizQuestionSceneSpec(
       ],
     lead:
       question.kind === 'likert'
-        ? '请评估以下陈述与你的匹配程度。'
-        : '以下情境中，哪种反应最接近你的第一直觉？',
+        ? sceneCopy.likertLead
+        : sceneCopy.scenarioLead,
     note:
       question.kind === 'likert'
-        ? '不存在正确答案。如实回答即可。'
-        : '选择你最可能采取的行动，而非你认为正确的行动。',
-    title: question.kind === 'likert' ? '自我陈述评估' : '情境反应评估',
+        ? sceneCopy.likertNote
+        : sceneCopy.scenarioNote,
+    title: question.kind === 'likert' ? sceneCopy.likertTitle : sceneCopy.scenarioTitle,
     voices:
       question.kind === 'likert'
         ? buildLikertQuestionVoices(question)
