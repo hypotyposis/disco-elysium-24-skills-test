@@ -1,4 +1,4 @@
-import { useRef, useState, type CSSProperties } from 'react'
+import { useMemo, useRef, useState, type CSSProperties } from 'react'
 
 import {
   buildVoicePortraitLineup,
@@ -8,13 +8,16 @@ import {
   normalizeSkillPortraitSlug,
 } from '../data/discoAssets.ts'
 import { skillFlavorNotes } from '../data/resultCopy.ts'
+import { voicePackMap } from '../data/voicePacks.ts'
 import type {
   ResultNarrative,
   ResultShareVariant,
 } from '../lib/resultNarrative.ts'
+import { buildMonologue } from '../lib/voiceEngine.ts'
 import type { DiscoReference, QuizResult } from '../types/quiz.ts'
 import { AttributeDiamond } from './AttributeDiamond.tsx'
 import { DossierArtifact } from './DossierArtifact.tsx'
+import { SkillMonologue } from './SkillMonologue.tsx'
 
 interface ResultScreenProps {
   reference: DiscoReference
@@ -50,6 +53,10 @@ export function ResultScreen({
     '--poster-backdrop-image': `url(${posterArt.backdrop.src})`,
   } as CSSProperties
   const voicePortraitLineup = buildVoicePortraitLineup(result.top3Skills)
+  const monologue = useMemo(
+    () => buildMonologue(result, voicePackMap),
+    [result],
+  )
   const rankedAttributes = [...reference.attributes].sort((left, right) => {
     const scoreDelta =
       result.attributeScores[right.english] -
@@ -245,6 +252,8 @@ export function ResultScreen({
             <p className="verdict-summary__lead">{narrative.punchline}</p>
             <p>{narrative.summary}</p>
           </div>
+
+          <SkillMonologue monologue={monologue} />
 
           <div className="verdict-fragments">
             <div className="verdict-fragment">

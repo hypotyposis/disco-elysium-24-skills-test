@@ -1,6 +1,7 @@
 import { rivalMap } from '../data/rivalMap.ts'
 import { skillMap } from '../data/discoReference.ts'
-import type { QuizAnswer, QuizQuestion, ScoreVector } from '../types/quiz.ts'
+import { skillFlavorNotes } from '../data/resultCopy.ts'
+import type { QuizAnswer, QuizQuestion, QuizResult, ScoreVector } from '../types/quiz.ts'
 
 export interface VoiceLine {
   skillEnglish: string
@@ -166,5 +167,66 @@ export function generateCommentary(
             role: 'contrarian',
           }
         : null,
+  }
+}
+
+export interface SkillMonologueData {
+  dominantSkillEnglish: string
+  dominantSkillChinese: string
+  monologueLines: string[]
+  rivalSkillEnglish: string | null
+  rivalSkillChinese: string | null
+  rivalInterjection: string | null
+}
+
+/**
+ * Build the result monologue from the dominant skill's voice data.
+ * Combines the epilogue line, worldview, relations, and pressure
+ * into a flowing personal address from the skill to the player.
+ */
+export function buildMonologue(
+  result: QuizResult,
+  voicePacks: Record<string, VoicePack>,
+): SkillMonologueData {
+  const primary = result.primarySkill
+  const rivalId = rivalMap[primary.english] ?? null
+  const rivalSkill = rivalId ? skillMap[rivalId] : null
+  const flavor = skillFlavorNotes[primary.english]
+  const pack = voicePacks[primary.english]
+  const rivalPack = rivalId ? voicePacks[rivalId] : undefined
+
+  const lines: string[] = []
+
+  const epilogue = pickRandom(pack?.voice.epilogue ?? [])
+  if (epilogue) lines.push(epilogue)
+
+  if (flavor) {
+    lines.push(flavor.worldview)
+    lines.push(flavor.relations)
+    lines.push(flavor.pressure)
+  }
+
+  let rivalInterjection: string | null = null
+  if (rivalPack && flavor) {
+    const contrarianLine = pickRandom(rivalPack.voice.contrarian ?? [])
+    if (contrarianLine) {
+      rivalInterjection = fillTemplate(contrarianLine, {
+        choice: '',
+        attribute: primary.attributeChinese,
+        skillName: rivalSkill?.chinese ?? '',
+        rivalSkill: primary.chinese,
+        score: primary.score,
+        questionNum: 0,
+      })
+    }
+  }
+
+  return {
+    dominantSkillEnglish: primary.english,
+    dominantSkillChinese: primary.chinese,
+    monologueLines: lines,
+    rivalSkillEnglish: rivalId,
+    rivalSkillChinese: rivalSkill?.chinese ?? null,
+    rivalInterjection,
   }
 }
