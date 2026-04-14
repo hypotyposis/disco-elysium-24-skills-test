@@ -462,13 +462,13 @@ export function getQuizQuestionSceneSpec(
       ],
     lead:
       question.kind === 'likert'
-        ? '同一份陈述，允许互相顶嘴的技能同时出庭。'
-        : '每个处理方式都带着一位技能代言，等你偏向谁。',
+        ? '请评估以下陈述与你的匹配程度。'
+        : '以下情境中，哪种反应最接近你的第一直觉？',
     note:
       question.kind === 'likert'
-        ? '把它想成一次脑内对白：认领与否认会召来不同的声部。'
-        : '先别求正确答案，先认出哪条路径像你会先迈出的那一步。',
-    title: question.kind === 'likert' ? '脑内声部对峙' : '现场路径复演',
+        ? '不存在正确答案。如实回答即可。'
+        : '选择你最可能采取的行动，而非你认为正确的行动。',
+    title: question.kind === 'likert' ? '自我陈述评估' : '情境反应评估',
     voices:
       question.kind === 'likert'
         ? buildLikertQuestionVoices(question)

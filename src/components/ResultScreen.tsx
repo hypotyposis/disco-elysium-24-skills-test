@@ -16,6 +16,7 @@ import type {
 import { buildMonologue } from '../lib/voiceEngine.ts'
 import type { DiscoReference, QuizResult } from '../types/quiz.ts'
 import { AttributeDiamond } from './AttributeDiamond.tsx'
+import { CharacterReviewSection } from './CharacterReview.tsx'
 import { DossierArtifact } from './DossierArtifact.tsx'
 import { SkillMonologue } from './SkillMonologue.tsx'
 
@@ -155,8 +156,8 @@ export function ResultScreen({
     <section className="result-screen">
       <header className="verdict-sheet dossier-sheet">
         <div className="sheet-meta sheet-meta--result">
-          <span className="file-label">结案记录 / internal voice</span>
-          <span>归档完成</span>
+          <span className="file-label">心理评估报告 / personnel psych profile</span>
+          <span>评估完成</span>
         </div>
 
         <div className="verdict-poster-frame">
@@ -175,7 +176,7 @@ export function ResultScreen({
 
             <div className="verdict-poster__body">
               <div className="verdict-poster__copy">
-                <p className="verdict-poster__prefix">主导技能 / lead voice</p>
+                <p className="verdict-poster__prefix">主导心理指标 / dominant trait</p>
                 <h1>{result.primarySkill.chinese}</h1>
                 <p className="verdict-poster__english">
                   {result.primarySkill.english}
@@ -194,7 +195,7 @@ export function ResultScreen({
                     src={primaryPortrait.src}
                   />
                   <figcaption className="verdict-poster__portrait-label">
-                    <span>主导声部 / portrait cut</span>
+                    <span>主导指标 / portrait cut</span>
                     <strong>{result.primarySkill.chinese}</strong>
                   </figcaption>
                 </figure>
@@ -207,24 +208,24 @@ export function ResultScreen({
                 <strong>{narrative.dominantAttribute.chinese}</strong>
               </div>
               <div>
-                <span>第二声部</span>
+                <span>第二指标</span>
                 <strong>{narrative.secondarySkill.chinese}</strong>
               </div>
               <div>
-                <span>思维橱柜</span>
+                <span>思维模式</span>
                 <strong>{narrative.thoughtTitle}</strong>
               </div>
             </div>
 
             <div className="verdict-poster__footer">
               <div className="verdict-poster__quote">
-                <span>判词摘录</span>
+                <span>评估摘要</span>
                 <p>{narrative.summary}</p>
               </div>
 
               <ol
                 className="verdict-poster__lineup"
-                aria-label="前三声部海报线列"
+                aria-label="前三指标海报线列"
               >
                 {voicePortraitLineup.map((item) => (
                   <li key={item.skill.english}>
@@ -255,17 +256,22 @@ export function ResultScreen({
 
           <SkillMonologue monologue={monologue} />
 
+          <CharacterReviewSection
+            primarySkillEnglish={result.primarySkill.english}
+            dominantAttribute={narrative.dominantAttribute.english}
+          />
+
           <div className="verdict-fragments">
             <div className="verdict-fragment">
               <span>主导属性</span>
               <strong>{narrative.dominantAttribute.chinese}</strong>
             </div>
             <div className="verdict-fragment">
-              <span>第二声部</span>
+              <span>第二指标</span>
               <strong>{narrative.secondarySkill.chinese}</strong>
             </div>
             <div className="verdict-fragment">
-              <span>第三声部</span>
+              <span>第三指标</span>
               <strong>{narrative.tertiarySkill.chinese}</strong>
             </div>
           </div>
@@ -341,8 +347,8 @@ export function ResultScreen({
         <section className="case-notes">
           <div className="section-record section-record--artifact">
             <div className="section-record__stack">
-              <p className="file-label">回响记录</p>
-              <h2>最响的三份证词</h2>
+              <p className="file-label">指标记录</p>
+              <h2>最显著的三项指标</h2>
             </div>
             <DossierArtifact
               asset={dossierArtifactAssets.ledger}
@@ -379,7 +385,7 @@ export function ResultScreen({
             asset={dossierArtifactAssets.pen}
             className="dossier-artifact--pen thought-note__artifact"
           />
-          <p className="file-label">思维橱柜倾向</p>
+          <p className="file-label">思维模式倾向</p>
           <h2>{narrative.thoughtTitle}</h2>
           <p>{narrative.thoughtBody}</p>
         </aside>
@@ -419,7 +425,7 @@ export function ResultScreen({
       <section className="skills-sheet">
         <div className="section-record">
           <p className="file-label">总档案</p>
-          <h2>二十四种技能，按卷归档</h2>
+          <h2>二十四项指标，按维度归档</h2>
         </div>
 
         <div className="skills-sheet__board">

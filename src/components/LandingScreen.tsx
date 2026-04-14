@@ -32,23 +32,24 @@ export function LandingScreen({
               asset={dossierArtifactAssets.badge}
               className="dossier-artifact--stamp"
             />
-            <span className="file-label">内心审讯卷宗</span>
+            <span className="file-label">RCM 第 41 特别分局 · 入职心理评估</span>
           </div>
           <span>卷别 04 / 证物 24</span>
         </div>
 
         <div className="landing-lockup">
           <div className="landing-lockup__main">
-            <p className="landing-lockup__prefix">夜班后自查，不对外流通</p>
+            <p className="landing-lockup__prefix">
+              瑞瓦肖公民自卫队 · 人事档案处
+            </p>
             <h1 id="landing-title">
-              哪一个技能
+              新警员
               <br />
-              正在替你说话
+              心理分析问卷
             </h1>
             <p className="landing-lockup__summary">
-              {questionCount}
-              道题，逐张翻开你在混乱、关系、直觉与冲动面前的第一反应。最后留档的，
-              会是脑子里最响的那一位。
+              本问卷包含 {questionCount}{' '}
+              道评估，将分析你的思维模式、情绪反应、身体素质与行动倾向。完成后将生成你的思维档案。
             </p>
           </div>
 
@@ -87,7 +88,7 @@ export function LandingScreen({
 
         <div className="landing-footer">
           <button className="document-button" type="button" onClick={onStart}>
-            开启审讯
+            开始评估
           </button>
 
           <div className="landing-ledger">
@@ -95,15 +96,15 @@ export function LandingScreen({
             <ul>
               <li>
                 <strong>{questionCount}</strong>
-                <span>份口供</span>
+                <span>道评估</span>
               </li>
               <li>
                 <strong>{reference.skills.length}</strong>
-                <span>种技能</span>
+                <span>项指标</span>
               </li>
               <li>
                 <strong>{reference.attributes.length}</strong>
-                <span>卷属性</span>
+                <span>维属性</span>
               </li>
             </ul>
           </div>
@@ -115,14 +116,14 @@ export function LandingScreen({
           <div className="archive-heading__head">
             <div className="archive-heading__body">
               <p className="file-label">目录页 / voices index</p>
-              <h2 id="archive-title">四卷分档，二十四种脑内证词。</h2>
+              <h2 id="archive-title">评估维度：四大属性，二十四项心理指标</h2>
             </div>
             <DossierArtifact
               asset={dossierArtifactAssets.map}
               className="dossier-artifact--map"
             />
           </div>
-          <p>不是能力树，是四类不同的失控方式。</p>
+          <p>每一项都会在执勤中影响你的判断与行为。</p>
         </div>
 
         <div className="archive-board">

@@ -81,9 +81,9 @@ export function QuizScreen({
       <header className="interrogation-header">
         <div className="interrogation-header__main">
           <p className="file-label">
-            审讯记录 / 第 {String(index + 1).padStart(2, '0')} 题
+            心理评估 / 第 {String(index + 1).padStart(2, '0')} 项
           </p>
-          <h2>让最先开口的那个声音先作证。</h2>
+          <h2>请选择最接近你真实反应的选项。</h2>
         </div>
         <div className="interrogation-actions">
           <button
@@ -108,7 +108,7 @@ export function QuizScreen({
           <span>
             第 {index + 1} / {total} 题
           </span>
-          <span>{selectedLabel ? `已归档：${selectedLabel}` : '尚未归档'}</span>
+          <span>{selectedLabel ? `已作答：${selectedLabel}` : '尚未作答'}</span>
         </div>
         <div aria-hidden="true" className="interrogation-ruler__track">
           <div
@@ -131,7 +131,7 @@ export function QuizScreen({
           <div className="scene-dossier__brief">
             <div className="scene-dossier__brief-head">
               <div>
-                <p className="file-label">现场提要</p>
+                <p className="file-label">评估背景</p>
                 <h3>{questionScene.title}</h3>
               </div>
               <DossierArtifact
@@ -144,15 +144,15 @@ export function QuizScreen({
             <p className="scene-dossier__note">{questionScene.note}</p>
 
             <div className="scene-dossier__status">
-              <span>当前归档</span>
-              <strong>{selectedLabel ?? '等待落笔'}</strong>
+              <span>已作答</span>
+              <strong>{selectedLabel ?? '待作答'}</strong>
             </div>
           </div>
 
           <div className="scene-dossier__voices">
             <div className="section-record">
-              <p className="file-label">在场声部</p>
-              <span>{questionScene.voices.length} 份内心证词</span>
+              <span className="file-label">相关指标</span>
+              <span>{questionScene.voices.length} 项心理指标</span>
             </div>
 
             <ol className={`voice-chorus voice-chorus--${question.kind}`}>
